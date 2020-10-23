@@ -132,7 +132,7 @@ public class Decrypt {
 	public static byte caesarFindKey(float[] charFrequencies) {
 		
 		float produitScalaireMaximal = 0;
-		int indiceProduitScalaireMaximal;
+		int indiceProduitScalaireMaximal = 0;
 		for(int frequencieIndex = 0; frequencieIndex < 256; ++ frequencieIndex)
 		{
 			float produitScalaire = 0;
