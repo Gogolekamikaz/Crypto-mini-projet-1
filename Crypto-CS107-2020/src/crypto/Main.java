@@ -39,6 +39,10 @@ public class Main {
 		System.out.println("------Xor------");
 		testXor(messageBytes, key2);
 
+		System.out.println("------Vigenere------");
+		testVigenere(messageBytes, keyBytes);
+
+
 		// TODO: TO BE COMPLETED
 
 
@@ -70,14 +74,13 @@ public class Main {
 	//Run the Encoding and Decoding using the xor pattern
 	public static void testXor(byte[] string , byte key) {
 		//Encoding
-		System.out.println(bytesToString(string));
 		byte[] result = Encrypt.xor(string, key);
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
 
-		/*//Decoding with key
+		//Decoding with key
 		String sD = bytesToString(Encrypt.xor(result, (byte)key));
-		System.out.println("Decoded knowing the key : " + sD);*/
+		System.out.println("Decoded knowing the key : " + sD);
 
 
 
@@ -85,6 +88,29 @@ public class Main {
 		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
 		String sDA = Decrypt.arrayToString(bruteForceResult);
 		Helper.writeStringToFile(sDA, "bruteForceXor.txt");
+
+		/*byte decodingKey = Decrypt.caesarWithFrequencies(result);
+		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));
+		System.out.println("Decoded without knowing the key : " + sFD);*/
+	}
+
+	//Run the Encoding and Decoding using the Vigenere pattern
+	public static void testVigenere(byte[] string , byte[] key) {
+		//Encoding
+		byte[] result = Encrypt.vigenere(string, key);
+		String s = bytesToString(result);
+		System.out.println("Encoded : " + s);
+
+		//Decoding with key
+		String sD = bytesToString(Encrypt.vigenere(result, stringToBytes("Î\u009DºÛË")));
+		System.out.println("Decoded knowing the key : " + sD);
+
+
+
+		/*//Decoding without key
+		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
+		String sDA = Decrypt.arrayToString(bruteForceResult);
+		Helper.writeStringToFile(sDA, "bruteForceXor.txt");*/
 
 		/*byte decodingKey = Decrypt.caesarWithFrequencies(result);
 		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));

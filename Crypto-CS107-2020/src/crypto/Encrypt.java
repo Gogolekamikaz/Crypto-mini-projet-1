@@ -36,18 +36,35 @@ public class Encrypt {
 		{
 			validKeyTable[keyIndex] = (byte)(inputKeyTable[keyIndex] % 256);
 		}
-		
-		//Veni Vidi Vici
-		if(type == 0)
-		{
-			byte ceasarKey = validKeyTable[0]; //La clé du chiffrement césar ne contient qu'un seul caractère
-			String encodedStrings = Helper.bytesToString(caesar(plainText, ceasarKey, false));
-			return encodedStrings;
+
+		String encodedStrings;
+
+		switch(type){
+
+			case CAESAR:
+				byte ceasarKey = validKeyTable[0]; //La clé du chiffrement césar ne contient qu'un seul caractère
+				encodedStrings = Helper.bytesToString(caesar(plainText, ceasarKey, false));
+				return encodedStrings;
+
+			case VIGENERE:
+				return null;
+
+			case XOR:
+				byte xorKey = validKeyTable[0]; //La clé du chiffrement xor ne contient qu'un seul caractère
+				encodedStrings = Helper.bytesToString(xor(plainText, xorKey));
+				return encodedStrings;
+
+			case ONETIME:
+				return null;
+
+			case CBC:
+				return null;
+
+			default:
+				return null;
+
 		}
-		else 
-		{
-			return null;
-		}
+
 	}
 	
 	
@@ -170,8 +187,22 @@ public class Encrypt {
 	 * @return an encoded byte array 
 	 */
 	public static byte[] vigenere(byte[] plainText, byte[] keyword, boolean spaceEncoding) {
-		// TODO: COMPLETE THIS METHOD		
-		return null; // TODO: to be modified
+
+		byte[] encodedBytes = new byte[plainText.length];
+
+		for(int i = 0; i< plainText.length; i++){
+			if(spaceEncoding){
+				if(plainText[i] != SPACE){
+					encodedBytes[i] = (byte) (plainText[i] + keyword[i% keyword.length]);
+				} else {
+					encodedBytes[i] = plainText[i];
+				}
+			} else {
+				encodedBytes[i] = (byte) (plainText[i] + keyword[i% keyword.length]);
+			}
+		}
+
+		return encodedBytes;
 	}
 	
 	/**
@@ -184,8 +215,16 @@ public class Encrypt {
 	 * @return an encoded byte array 
 	 */
 	public static byte[] vigenere(byte[] plainText, byte[] keyword) {
-		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		byte[] encodedBytes = new byte[plainText.length];
+
+		for(int i = 0; i< plainText.length; i++){
+			if(plainText[i] != SPACE){
+				encodedBytes[i] = (byte) (plainText[i] + keyword[i% keyword.length]);
+			} else {
+				encodedBytes[i] = plainText[i];
+			}
+		}
+		return encodedBytes;
 	}
 	
 	
