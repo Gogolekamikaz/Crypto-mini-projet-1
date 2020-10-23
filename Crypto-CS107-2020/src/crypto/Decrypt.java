@@ -117,9 +117,14 @@ public class Decrypt {
 	 * @return the array of possibilities for the clear text
 	 */
 	public static byte[][] xorBruteForce(byte[] cipher) {
-		//TODO : COMPLETE THIS METHOD
 
-		return null; //TODO: to be modified
+		byte[][] results = new byte[256][cipher.length];
+
+		for(int i = 0; i< results.length; i++){
+			results[i] = Encrypt.xor(cipher, (byte)i);
+		}
+
+		return results;
 	}
 	
 	

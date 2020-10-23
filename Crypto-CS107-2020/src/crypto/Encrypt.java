@@ -95,20 +95,18 @@ public class Encrypt {
 	 */
 	public static byte[] caesar(byte[] plainText, byte key) {
 		byte[] encodedText = new byte[plainText.length];
-		for(int byteIndex = 0; byteIndex < plainText.length; ++byteIndex)
-		{			
-			if(plainText[byteIndex] == 20) // Si charactère associé au byte est un espace
+		for (int byteIndex = 0; byteIndex < plainText.length; ++byteIndex) {
+			if (plainText[byteIndex] == 20) // Si charactère associé au byte est un espace
 			{
 				encodedText[byteIndex] = plainText[byteIndex]; // Aucun décalage
-				
-			}
-			else
-			{
+
+			} else {
 				encodedText[byteIndex] = (byte) (plainText[byteIndex] + key);
 			}
 		}
 		return encodedText;
 	}
+
 	
 	
 	//-----------------------XOR-------------------------
@@ -120,8 +118,9 @@ public class Encrypt {
 	 * @param spaceEncoding if false, then spaces are not encoded
 	 * @return an encoded byte array
 	 */
+
 	public static byte[] xor(byte[] plainText, byte key, boolean spaceEncoding) {
-		// TODO: COMPLETE THIS METHOD
+
 		byte[] encodedBytes = new byte[plainText.length];
 		if(spaceEncoding){
 			for (int i = 0; i< encodedBytes.length; i++) {
@@ -132,11 +131,14 @@ public class Encrypt {
 			for (int i = 0; i< encodedBytes.length; i++) {
 				if(plainText[i] != SPACE){
 					encodedBytes[i] = (byte)(plainText[i] ^ key);
+				} else {
+					encodedBytes[i] = plainText[i];
 				}
 			}
 			return encodedBytes;
 		}
 	}
+
 	/**
 	 * Method to encode a byte array using a XOR with a single byte long key
 	 * spaces are not encoded
@@ -144,15 +146,18 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] xor(byte[] plainText, byte key) {
-		// TODO: COMPLETE THIS METHOD
-		byte[] encodedBytes = plainText;
+
+		byte[] encodedBytes = new byte[plainText.length];
 		for (int i = 0; i< encodedBytes.length; i++) {
-			if(encodedBytes[i] != SPACE){
-				encodedBytes[i] = (byte)(encodedBytes[i] ^ key);
+			if(plainText[i] != SPACE){
+				encodedBytes[i] = (byte)(plainText[i] ^ key);
+			} else {
+				encodedBytes[i] = plainText[i];
 			}
 		}
 		return encodedBytes;
 	}
+
 	//-----------------------Vigenere-------------------------
 	
 	/**

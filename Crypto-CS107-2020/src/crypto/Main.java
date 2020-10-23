@@ -19,25 +19,25 @@ public class Main {
 
 
 		String inputMessage = Helper.readStringFromFile("text_one.txt");
-		//String key = "2cF%5";
+		String key = "2cF%5";
 
 		String messageClean = cleanString(inputMessage);
 
 
 		byte[] messageBytes = stringToBytes(messageClean);
-		//byte[] keyBytes = stringToBytes(key);
+		byte[] keyBytes = stringToBytes(key);
 		
 		
-		/*System.out.println("Original input sanitized : " + messageClean);
+		System.out.println("Original input sanitized : " + messageClean);
 		System.out.println();
 		
 		System.out.println("------Caesar------");
-		testCaesar(messageBytes, keyBytes[0]);*/
+		testCaesar(messageBytes, keyBytes[0]);
 
-		byte key = (byte)50;
+		byte key2 = (byte)50;
 
 		System.out.println("------Xor------");
-		testXor(messageBytes, key);
+		testXor(messageBytes, key2);
 
 		// TODO: TO BE COMPLETED
 
@@ -70,20 +70,23 @@ public class Main {
 	//Run the Encoding and Decoding using the xor pattern
 	public static void testXor(byte[] string , byte key) {
 		//Encoding
+		System.out.println(bytesToString(string));
 		byte[] result = Encrypt.xor(string, key);
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
 
-		//Decoding with key
+		/*//Decoding with key
 		String sD = bytesToString(Encrypt.xor(result, (byte)key));
-		System.out.println("Decoded knowing the key : " + sD);
+		System.out.println("Decoded knowing the key : " + sD);*/
 
-		/*//Decoding without key
-		byte[][] bruteForceResult = Decrypt.caesarBruteForce(result);
+
+
+		//Decoding without key
+		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
 		String sDA = Decrypt.arrayToString(bruteForceResult);
-		Helper.writeStringToFile(sDA, "bruteForceCaesar.txt");
+		Helper.writeStringToFile(sDA, "bruteForceXor.txt");
 
-		byte decodingKey = Decrypt.caesarWithFrequencies(result);
+		/*byte decodingKey = Decrypt.caesarWithFrequencies(result);
 		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));
 		System.out.println("Decoded without knowing the key : " + sFD);*/
 	}
