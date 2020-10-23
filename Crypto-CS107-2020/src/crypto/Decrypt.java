@@ -35,26 +35,21 @@ public class Decrypt {
 	 * @param bruteForceResult a 2D byte array containing the result of a brute force method
 	 */
 	public static String arrayToString(byte[][] bruteForceResult) {
-		byte[] encodedText = new byte[plainText.length];
-		for(int byteIndex = 0; byteIndex < plainText.length; ++byteIndex)
-		{			
-			if(!spaceEncoding) // On choisit de ne pas encoder les esapces
+		String bruteForceStringResult = "";
+		
+		for(int keyNumber = 0; keyNumber<bruteForceResult.length; ++keyNumber)
+		{
+			byte decodedBytes[] = new byte[bruteForceResult[0].length]; //Taille du tableau des bytes encodés
+			for(int byteIndex = 0; byteIndex < bruteForceResult[0].length; ++ byteIndex)
 			{
-				if(plainText[byteIndex] == 20) // Si charactère associé au byte est un espace
-				{
-					encodedText[byteIndex] = plainText[byteIndex]; // Aucun décalage
-				}
-				else
-				{
-					encodedText[byteIndex] = (byte) (plainText[byteIndex] + key);
-				}
+				decodedBytes[byteIndex] = bruteForceResult[keyNumber][byteIndex];
 			}
-			else 
-			{
-			encodedText[byteIndex] = (byte) (plainText[byteIndex] + key); 
-			}
+			String byteTableString = Helper.bytesToString(decodedBytes); //Associe le i ème tableau de bytes à ses Strings
+			
+			bruteForceStringResult += "\n - - - - - /!\\ TRY N°"+ (int)(keyNumber+1)+"/!\\ - - - - - \n" + byteTableString; //Ajoute l'équivalene en String du i ème tableau au texte final qui sera affiché
+			
 		}
-		return encodedText;
+		return bruteForceStringResult;
 	}
 	
 	
