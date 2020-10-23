@@ -27,9 +27,27 @@ public class Encrypt {
 	 * if the method is called with an unknown type of algorithm, it returns the original message
 	 */
 	public static String encrypt(String message, String key, int type) {
-		// TODO: COMPLETE THIS METHOD
+		byte[] inputKeyTable = Helper.stringToBytes(key); // /!\ Tableau des clés (input utilisateur)
+		byte[] plainText = Helper.stringToBytes(message);
 		
-		return null; // TODO: to be modified
+		// Generation du tableau des clés valides (modulo 256)
+		byte[] validKeyTable = new byte[inputKeyTable.length]; // Tableau "validé" avec les modulo. C'est peut être inutile en vrai...
+		for(int keyIndex = 0; keyIndex < inputKeyTable.length; ++keyIndex)
+		{
+			validKeyTable[keyIndex] = (byte)(inputKeyTable[keyIndex] % 256);
+		}
+		
+		//Veni Vidi Vici
+		if(type == 0)
+		{
+			byte ceasarKey = validKeyTable[0]; //La clé du chiffrement césar ne contient qu'un seul caractère
+			String encodedStrings = Helper.bytesToString(caesar(plainText, ceasarKey, false));
+			return encodedStrings;
+		}
+		else 
+		{
+			return null;
+		}
 	}
 	
 	
@@ -45,9 +63,26 @@ public class Encrypt {
 	 */
 	public static byte[] caesar(byte[] plainText, byte key, boolean spaceEncoding) {
 		assert(plainText != null);
-		// TODO: COMPLETE THIS METHOD
-		
-		return null; // TODO: to be modified
+		byte[] encodedText = new byte[plainText.length];
+		for(int byteIndex = 0; byteIndex < plainText.length; ++byteIndex)
+		{			
+			if(!spaceEncoding) // Si on choisit de ne pas encoder les espaces
+			{
+				if(plainText[byteIndex] == 20) // Si charactère associé au byte est un espace
+				{
+					encodedText[byteIndex] = plainText[byteIndex]; // Aucun décalage
+				}
+				else
+				{
+					encodedText[byteIndex] = (byte) (plainText[byteIndex] + key);
+				}
+			}
+			else 
+			{
+			encodedText[byteIndex] = (byte) (plainText[byteIndex] + key); 
+			}
+		}
+		return encodedText;
 	}
 	
 	/**
@@ -59,8 +94,21 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] caesar(byte[] plainText, byte key) {
-		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		byte[] encodedText = new byte[plainText.length];
+		for(int byteIndex = 0; byteIndex < plainText.length; ++byteIndex)
+		{			
+			if(plainText[byteIndex] == 20) // Si charactère associé au byte est un espace
+			{
+				encodedText[byteIndex] = plainText[byteIndex]; // Aucun décalage
+				
+			}
+			else
+			{
+				encodedText[byteIndex] = (byte) (plainText[byteIndex] + key);
+			}
+		}
+		return encodedText;
+	}
 	}
 	
 	//-----------------------XOR-------------------------
