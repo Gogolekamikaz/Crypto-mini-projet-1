@@ -85,7 +85,7 @@ public class Encrypt {
 		{			
 			if(!spaceEncoding) // Si on choisit de ne pas encoder les espaces
 			{
-				if(plainText[byteIndex] == 20) // Si charactère associé au byte est un espace
+				if(plainText[byteIndex] == SPACE) // Si charactère associé au byte est un espace
 				{
 					encodedText[byteIndex] = plainText[byteIndex]; // Aucun décalage
 				}
