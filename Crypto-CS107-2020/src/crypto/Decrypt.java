@@ -67,7 +67,14 @@ public class Decrypt {
 		{
 			for(int encodedByteIndex = 0; encodedByteIndex < cipher.length; ++ encodedByteIndex)
 			{
-				decodedPossibilities[keyTry+128][encodedByteIndex] = (byte)(cipher[encodedByteIndex] - keyTry);
+				if(cipher[encodedByteIndex] != Encrypt.SPACE)
+				{
+					decodedPossibilities[keyTry+128][encodedByteIndex] = (byte)(cipher[encodedByteIndex] - keyTry);
+				}
+				else 
+				{
+					decodedPossibilities[keyTry+128][encodedByteIndex] = (byte)(cipher[encodedByteIndex]);
+				}
 			}
 		}
 		return decodedPossibilities;
