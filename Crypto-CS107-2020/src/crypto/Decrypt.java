@@ -46,7 +46,7 @@ public class Decrypt {
 			}
 			String byteTableString = Helper.bytesToString(decodedBytes); //Associe le i ème tableau de bytes à ses Strings
 			
-			bruteForceStringResult += "\n - - - - - /!\\ TRY N°"+ (int)(keyNumber+1)+"/!\\ - - - - - \n" + byteTableString; //Ajoute l'équivalene en String du i ème tableau au texte final qui sera affiché
+			bruteForceStringResult += " - - - - - /!\\ TRY N°"+ (int)(keyNumber+1)+"/!\\ - - - - - "+ System.lineSeparator() + byteTableString + System.lineSeparator(); //Ajoute l'équivalene en String du i ème tableau au texte final qui sera affiché
 			
 		}
 		return bruteForceStringResult;
@@ -99,8 +99,8 @@ public class Decrypt {
 	 */
 	public static float[] computeFrequencies(byte[] cipherText) {
 		
-		float[] cardinal = new float[256];
-		float[] frequencies = new float[256];
+		float[] cardinal = new float[ALPHABETSIZE];
+		float[] frequencies = new float[ALPHABETSIZE];
 		int spaceNumber = 0;
 		
 		for(int iterator0 = 0; iterator0 < cipherText.length; ++iterator0) //Comptage du nombre d'espaces
@@ -114,7 +114,7 @@ public class Decrypt {
 		
 		float totalBytesNumber = cipherText.length - spaceNumber; //On ne compte plus les espaces dans le nombre total
 		
-		for(int iterator = 0; iterator < 256; ++iterator)  // Initialisation du tableau cardinal à 0
+		for(int iterator = 0; iterator < ALPHABETSIZE; ++iterator)  // Initialisation du tableau cardinal à 0
 		{
 			cardinal[iterator] = 0;
 		}
@@ -129,7 +129,7 @@ public class Decrypt {
 			}
 		}
 				
-		for(int numberIndex = 0; numberIndex < 256 ; ++numberIndex)
+		for(int numberIndex = 0; numberIndex < ALPHABETSIZE ; ++numberIndex)
 		{
 			frequencies[numberIndex] = (cardinal[numberIndex])/totalBytesNumber;
 		}
@@ -146,7 +146,7 @@ public class Decrypt {
 		
 		float produitScalaireMaximal = 0;
 		int indiceProduitScalaireMaximal = 0;
-		for(int frequencieIndex = 0; frequencieIndex < 256; ++ frequencieIndex)
+		for(int frequencieIndex = 0; frequencieIndex < ALPHABETSIZE; ++ frequencieIndex)
 		{
 			float produitScalaire = 0;
 			for(int m = (frequencieIndex) , englishFrequencieIndex = 0; englishFrequencieIndex < ENGLISHFREQUENCIES.length;  m++ , ++englishFrequencieIndex)
@@ -178,7 +178,7 @@ public class Decrypt {
 	 */
 	public static byte[][] xorBruteForce(byte[] cipher) {
 
-		byte[][] results = new byte[256][cipher.length];
+		byte[][] results = new byte[ALPHABETSIZE][cipher.length];
 
 		for(int i = 0; i< results.length; i++){
 			results[i] = Encrypt.xor(cipher, (byte)i);

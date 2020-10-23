@@ -47,7 +47,8 @@ public class Encrypt {
 				return encodedStrings;
 
 			case VIGENERE:
-				return null;
+				encodedStrings = Helper.bytesToString(vigenere(plainText, Helper.stringToBytes(key)));
+				return encodedStrings;
 
 			case XOR:
 				byte xorKey = validKeyTable[0]; //La clé du chiffrement xor ne contient qu'un seul caractère
@@ -55,7 +56,14 @@ public class Encrypt {
 				return encodedStrings;
 
 			case ONETIME:
-				return null;
+				try {
+					encodedStrings = Helper.bytesToString(oneTimePad(plainText, Helper.stringToBytes(key)));
+					return encodedStrings;
+				} catch (NullPointerException e) {
+					return "";
+				}
+
+			//TODO : Complete the function
 
 			case CBC:
 				return null;
@@ -143,7 +151,6 @@ public class Encrypt {
 			for (int i = 0; i< encodedBytes.length; i++) {
 				encodedBytes[i] = (byte)(plainText[i] ^ key);
 			}
-			return encodedBytes;
 		} else {
 			for (int i = 0; i< encodedBytes.length; i++) {
 				if(plainText[i] != SPACE){
@@ -152,8 +159,8 @@ public class Encrypt {
 					encodedBytes[i] = plainText[i];
 				}
 			}
-			return encodedBytes;
 		}
+		return encodedBytes;
 	}
 
 	/**
@@ -162,18 +169,8 @@ public class Encrypt {
 	 * @param key the byte we will use to XOR
 	 * @return an encoded byte array
 	 */
-	public static byte[] xor(byte[] plainText, byte key) {
 
-		byte[] encodedBytes = new byte[plainText.length];
-		for (int i = 0; i< encodedBytes.length; i++) {
-			if(plainText[i] != SPACE){
-				encodedBytes[i] = (byte)(plainText[i] ^ key);
-			} else {
-				encodedBytes[i] = plainText[i];
-			}
-		}
-		return encodedBytes;
-	}
+	public static byte[] xor(byte[] plainText, byte key) { return xor(plainText, key, false); }
 
 	//-----------------------Vigenere-------------------------
 	
@@ -192,13 +189,13 @@ public class Encrypt {
 
 		for(int i = 0; i< plainText.length; i++){
 			if(spaceEncoding){
+				encodedBytes[i] = (byte) (plainText[i] + keyword[i % keyword.length]);
+			} else {
 				if(plainText[i] != SPACE){
-					encodedBytes[i] = (byte) (plainText[i] + keyword[i% keyword.length]);
+					encodedBytes[i] = (byte) (plainText[i] + keyword[i % keyword.length]);
 				} else {
 					encodedBytes[i] = plainText[i];
 				}
-			} else {
-				encodedBytes[i] = (byte) (plainText[i] + keyword[i% keyword.length]);
 			}
 		}
 
@@ -214,18 +211,7 @@ public class Encrypt {
 	 * @param keyword the byte array representing the key used to perform the shift
 	 * @return an encoded byte array 
 	 */
-	public static byte[] vigenere(byte[] plainText, byte[] keyword) {
-		byte[] encodedBytes = new byte[plainText.length];
-
-		for(int i = 0; i< plainText.length; i++){
-			if(plainText[i] != SPACE){
-				encodedBytes[i] = (byte) (plainText[i] + keyword[i% keyword.length]);
-			} else {
-				encodedBytes[i] = plainText[i];
-			}
-		}
-		return encodedBytes;
-	}
+	public static byte[] vigenere(byte[] plainText, byte[] keyword) { return vigenere(plainText, keyword, false); }
 	
 	
 	
@@ -240,19 +226,24 @@ public class Encrypt {
 	 */
 
 	public static byte[] oneTimePad(byte[] plainText, byte[] pad) {
+
 		try{
+
 			byte[] encodedBytes = new byte[plainText.length];
+
 			for(int i = 0; i< plainText.length; i++){
 				encodedBytes[i] = (byte)(plainText[i]^pad[i]);
 			}
+
 			return encodedBytes;
+
 		} catch (ArrayIndexOutOfBoundsException e) {
+
 			System.out.println("The length of the Pad does not correspond.");
 			return null;
+
 		}
 	}
-	
-	
 	
 	
 	//-----------------------Basic CBC-------------------------
@@ -275,12 +266,17 @@ public class Encrypt {
 	 * @param size the size of the pad
 	 * @return random bytes in an array
 	 */
+
 	public static byte[] generatePad(int size) {
+
 		byte[] pad = new byte[size];
+
 		for (int i = 0; i< pad.length; i++) {
-			pad[i] = (byte)(rand.nextInt(256));
+			pad[i] = (byte)(rand.nextInt(Decrypt.ALPHABETSIZE));
 		}
+
 		return pad;
+
 	}
 	
 	

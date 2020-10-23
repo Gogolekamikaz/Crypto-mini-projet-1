@@ -49,6 +49,7 @@ public class Main {
 		testOTP(messageBytes);
 
 
+
 		// TODO: TO BE COMPLETED
 
 
@@ -126,7 +127,7 @@ public class Main {
 	//Run the Encoding and Decoding using the OTP pattern
 	public static void testOTP(byte[] string) {
 		//Encoding
-		byte[] result = Encrypt.oneTimePad(string, Encrypt.generatePad(string.length-1));
+		byte[] result = Encrypt.oneTimePad(string, Encrypt.generatePad(string.length));
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
 
