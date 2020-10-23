@@ -98,8 +98,29 @@ public class Decrypt {
 	 * @return the character frequencies as an array of float
 	 */
 	public static float[] computeFrequencies(byte[] cipherText) {
-		//TODO : COMPLETE THIS METHOD
-		return null; //TODO: to be modified
+		
+		int[] cardinal = new int[cipherText.length];
+		int totalBytesNumber = cipherText.length;
+		float[] frequencies = new float[256];
+		
+		for(int byteIndex = 0; byteIndex < cipherText.length; ++ byteIndex)
+		{
+			byte iteratedByte = cipherText[byteIndex];
+			if (iteratedByte == 20)
+			{
+				
+			}
+			else 
+			{
+				int validIteratedByte = iteratedByte + 128;
+				cardinal[validIteratedByte] += 1;
+			}
+		}
+		for(int numberIndex = 0; numberIndex <256 ; ++numberIndex)
+		{
+			frequencies[numberIndex] = cardinal[numberIndex]/totalBytesNumber;
+		}
+		return frequencies; 
 	}
 	
 	
@@ -109,8 +130,27 @@ public class Decrypt {
 	 * @return the key
 	 */
 	public static byte caesarFindKey(float[] charFrequencies) {
-		//TODO : COMPLETE THIS METHOD
-		return -1; //TODO: to be modified
+		
+		float produitScalaireMaximal = 0;
+		int indiceProduitScalaireMaximal;
+		for(int frequencieIndex = 0; frequencieIndex < 256; ++ frequencieIndex)
+		{
+			float produitScalaire = 0;
+			for(int m = (frequencieIndex) , englishFrequencieIndex = 0; englishFrequencieIndex < ENGLISHFREQUENCIES.length;  m++ , ++englishFrequencieIndex)
+			{
+				m = m%256;
+				produitScalaire += charFrequencies[m]* ENGLISHFREQUENCIES[englishFrequencieIndex];
+			}
+			if(produitScalaire > produitScalaireMaximal)
+			{
+				produitScalaireMaximal = produitScalaireMaximal;
+				indiceProduitScalaireMaximal = frequencieIndex;
+			}	
+		}
+		
+		byte key = (byte)(indiceProduitScalaireMaximal - APOSITION);
+		
+		return key;
 	}
 	
 	
