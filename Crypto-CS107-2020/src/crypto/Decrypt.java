@@ -99,26 +99,40 @@ public class Decrypt {
 	 */
 	public static float[] computeFrequencies(byte[] cipherText) {
 		
-		int[] cardinal = new int[cipherText.length];
-		int totalBytesNumber = cipherText.length;
+		float[] cardinal = new float[256];
 		float[] frequencies = new float[256];
+		int spaceNumber = 0;
 		
-		for(int byteIndex = 0; byteIndex < cipherText.length; ++ byteIndex)
+		for(int iterator0 = 0; iterator0 < cipherText.length; ++iterator0) //Comptage du nombre d'espaces
+		{
+			if(cipherText[iterator0] == Encrypt.SPACE)
+			{
+				spaceNumber += 1;
+			}
+			
+		}
+		
+		float totalBytesNumber = cipherText.length - spaceNumber; //On ne compte plus les espaces dans le nombre total
+		
+		for(int iterator = 0; iterator < 256; ++iterator)  // Initialisation du tableau cardinal à 0
+		{
+			cardinal[iterator] = 0;
+		}
+		
+		for(int byteIndex = 0; byteIndex < cipherText.length; ++byteIndex)
 		{
 			byte iteratedByte = cipherText[byteIndex];
-			if (iteratedByte == 20)
-			{
-				
-			}
-			else 
+			if (iteratedByte != Encrypt.SPACE)
 			{
 				int validIteratedByte = iteratedByte + 128;
 				cardinal[validIteratedByte] += 1;
 			}
 		}
-		for(int numberIndex = 0; numberIndex <256 ; ++numberIndex)
+				
+		for(int numberIndex = 0; numberIndex < 256 ; ++numberIndex)
 		{
-			frequencies[numberIndex] = cardinal[numberIndex]/totalBytesNumber;
+			frequencies[numberIndex] = (cardinal[numberIndex])/totalBytesNumber;
+			System.out.println(frequencies[numberIndex]); // A SUPPRIMER APRES LES TESTS
 		}
 		return frequencies; 
 	}
