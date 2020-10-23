@@ -67,14 +67,27 @@ public class Encrypt {
 	
 	/**
 	 * Method to encode a byte array using a XOR with a single byte long key
-	 * @param plaintext the byte array representing the string to encode
+	 * @param plainText the byte array representing the string to encode
 	 * @param key the byte we will use to XOR
 	 * @param spaceEncoding if false, then spaces are not encoded
 	 * @return an encoded byte array
 	 */
 	public static byte[] xor(byte[] plainText, byte key, boolean spaceEncoding) {
 		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		byte[] encodedBytes = new byte[plainText.length];
+		if(spaceEncoding){
+			for (int i = 0; i< encodedBytes.length; i++) {
+				encodedBytes[i] = (byte)(plainText[i] ^ key);
+			}
+			return encodedBytes;
+		} else {
+			for (int i = 0; i< encodedBytes.length; i++) {
+				if(plainText[i] != SPACE){
+					encodedBytes[i] = (byte)(plainText[i] ^ key);
+				}
+			}
+			return encodedBytes;
+		}
 	}
 	/**
 	 * Method to encode a byte array using a XOR with a single byte long key
@@ -84,7 +97,13 @@ public class Encrypt {
 	 */
 	public static byte[] xor(byte[] plainText, byte key) {
 		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		byte[] encodedBytes = plainText;
+		for (int i = 0; i< encodedBytes.length; i++) {
+			if(encodedBytes[i] != SPACE){
+				encodedBytes[i] = (byte)(encodedBytes[i] ^ key);
+			}
+		}
+		return encodedBytes;
 	}
 	//-----------------------Vigenere-------------------------
 	
