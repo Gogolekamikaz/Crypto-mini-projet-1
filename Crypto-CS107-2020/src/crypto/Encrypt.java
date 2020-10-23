@@ -238,9 +238,18 @@ public class Encrypt {
 	 * @param pad the one time pad
 	 * @return an encoded byte array
 	 */
+
 	public static byte[] oneTimePad(byte[] plainText, byte[] pad) {
-		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		try{
+			byte[] encodedBytes = new byte[plainText.length];
+			for(int i = 0; i< plainText.length; i++){
+				encodedBytes[i] = (byte)(plainText[i]^pad[i]);
+			}
+			return encodedBytes;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("The length of the Pad does not correspond.");
+			return null;
+		}
 	}
 	
 	
@@ -267,10 +276,11 @@ public class Encrypt {
 	 * @return random bytes in an array
 	 */
 	public static byte[] generatePad(int size) {
-		// TODO: COMPLETE THIS METHOD
-
-		return null; // TODO: to be modified
-
+		byte[] pad = new byte[size];
+		for (int i = 0; i< pad.length; i++) {
+			pad[i] = (byte)(rand.nextInt(256));
+		}
+		return pad;
 	}
 	
 	

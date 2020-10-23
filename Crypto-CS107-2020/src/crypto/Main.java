@@ -42,6 +42,12 @@ public class Main {
 		System.out.println("------Vigenere------");
 		testVigenere(messageBytes, keyBytes);
 
+		System.out.println("------PAD------");
+		System.out.println(bytesToString(Encrypt.generatePad(5)));
+
+		System.out.println("------OTP------");
+		testOTP(messageBytes);
+
 
 		// TODO: TO BE COMPLETED
 
@@ -104,6 +110,29 @@ public class Main {
 		//Decoding with key
 		String sD = bytesToString(Encrypt.vigenere(result, stringToBytes("Î\u009DºÛË")));
 		System.out.println("Decoded knowing the key : " + sD);
+
+
+
+		/*//Decoding without key
+		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
+		String sDA = Decrypt.arrayToString(bruteForceResult);
+		Helper.writeStringToFile(sDA, "bruteForceXor.txt");*/
+
+		/*byte decodingKey = Decrypt.caesarWithFrequencies(result);
+		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));
+		System.out.println("Decoded without knowing the key : " + sFD);*/
+	}
+
+	//Run the Encoding and Decoding using the OTP pattern
+	public static void testOTP(byte[] string) {
+		//Encoding
+		byte[] result = Encrypt.oneTimePad(string, Encrypt.generatePad(string.length-1));
+		String s = bytesToString(result);
+		System.out.println("Encoded : " + s);
+
+		/*//Decoding with key
+		String sD = bytesToString(Encrypt.vigenere(result, stringToBytes("Î\u009DºÛË")));
+		System.out.println("Decoded knowing the key : " + sD);*/
 
 
 
