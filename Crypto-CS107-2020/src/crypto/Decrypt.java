@@ -35,9 +35,26 @@ public class Decrypt {
 	 * @param bruteForceResult a 2D byte array containing the result of a brute force method
 	 */
 	public static String arrayToString(byte[][] bruteForceResult) {
-		//TODO : COMPLETE THIS METHOD
-		
-		return null; //TODO: to be modified
+		byte[] encodedText = new byte[plainText.length];
+		for(int byteIndex = 0; byteIndex < plainText.length; ++byteIndex)
+		{			
+			if(!spaceEncoding) // On choisit de ne pas encoder les esapces
+			{
+				if(plainText[byteIndex] == 20) // Si charactère associé au byte est un espace
+				{
+					encodedText[byteIndex] = plainText[byteIndex]; // Aucun décalage
+				}
+				else
+				{
+					encodedText[byteIndex] = (byte) (plainText[byteIndex] + key);
+				}
+			}
+			else 
+			{
+			encodedText[byteIndex] = (byte) (plainText[byteIndex] + key); 
+			}
+		}
+		return encodedText;
 	}
 	
 	
@@ -50,9 +67,15 @@ public class Decrypt {
 	 * @return a 2D byte array containing all the possibilities
 	 */
 	public static byte[][] caesarBruteForce(byte[] cipher) {
-		//TODO : COMPLETE THIS METHOD
-
-		return null; //TODO: to be modified
+		byte[][] decodedPossibilities = new byte[256][cipher.length]; 
+		for(int keyTry = -128; keyTry <128; ++keyTry)
+		{
+			for(int encodedByteIndex = 0; encodedByteIndex < cipher.length; ++ encodedByteIndex)
+			{
+				decodedPossibilities[keyTry+128][encodedByteIndex] = (byte)(cipher[encodedByteIndex] - keyTry);
+			}
+		}
+		return decodedPossibilities;
 	}	
 	
 	
