@@ -87,9 +87,9 @@ public class Decrypt {
 	 * @return the encoding key
 	 */
 	public static byte caesarWithFrequencies(byte[] cipherText) {
-		//TODO : COMPLETE THIS METHOD
-
-		return -1; //TODO: to be modified
+		float[] frequencies = computeFrequencies(cipherText);
+		byte deducedKey = caesarFindKey(frequencies);
+		return deducedKey;
 	}
 	
 	/**
@@ -149,18 +149,17 @@ public class Decrypt {
 		for(int frequencieIndex = 0; frequencieIndex < 256; ++ frequencieIndex)
 		{
 			float produitScalaire = 0;
-			for(int m = (frequencieIndex) , englishFrequencieIndex = 0; englishFrequencieIndex < ENGLISHFREQUENCIES.length;  m++ , ++englishFrequencieIndex)
+			for(int m = frequencieIndex , englishFrequencieIndex = 0; englishFrequencieIndex < ENGLISHFREQUENCIES.length;  m++ , ++englishFrequencieIndex)
 			{
 				m = m%256;
 				produitScalaire += charFrequencies[m]* ENGLISHFREQUENCIES[englishFrequencieIndex];
 			}
 			if(produitScalaire > produitScalaireMaximal)
 			{
-				produitScalaireMaximal = produitScalaireMaximal;
+				produitScalaireMaximal = produitScalaire;
 				indiceProduitScalaireMaximal = frequencieIndex;
 			}	
 		}
-		
 		byte key = (byte)(indiceProduitScalaireMaximal - APOSITION);
 		
 		return key;
