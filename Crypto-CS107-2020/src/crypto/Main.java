@@ -74,6 +74,7 @@ public class Main {
 		Helper.writeStringToFile(sDA, "bruteForceCaesar.txt");
 		
 		byte decodingKey = Decrypt.caesarWithFrequencies(result);
+		decodingKey = (byte)(-decodingKey); // Important pour pouvoir correctement décoder le message. En effet, on décode on encodant avec l'opposé de la clé de chiffrement.
 		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));
 		System.out.println("Decoded without knowing the key : " + sFD);
 	}
