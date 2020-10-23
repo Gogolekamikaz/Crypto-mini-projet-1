@@ -132,7 +132,6 @@ public class Decrypt {
 		for(int numberIndex = 0; numberIndex < 256 ; ++numberIndex)
 		{
 			frequencies[numberIndex] = (cardinal[numberIndex])/totalBytesNumber;
-			System.out.println(frequencies[numberIndex]); // A SUPPRIMER APRES LES TESTS
 		}
 		return frequencies; 
 	}
