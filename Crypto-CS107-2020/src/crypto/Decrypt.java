@@ -209,8 +209,15 @@ public class Decrypt {
 	 * @return a List of bytes without spaces
 	 */
 	public static List<Byte> removeSpaces(byte[] array){
-		//TODO : COMPLETE THIS METHOD
-		return null;
+		List<Byte> sanitizedArray = new ArrayList<Byte>();
+
+		for (int i = 0; i<array.length; i++){
+			if(array[i] != Encrypt.SPACE){
+				sanitizedArray.add(array[i]);
+			}
+		}
+
+		return sanitizedArray;
 	}
 	
 	
