@@ -209,15 +209,15 @@ public class Decrypt {
 	 * @return a List of bytes without spaces
 	 */
 	public static List<Byte> removeSpaces(byte[] array){
-		List<Byte> sanitizedArray = new ArrayList<Byte>();
+		List<Byte> sanitizedCipher = new ArrayList<Byte>();
 
 		for (int i = 0; i<array.length; i++){
 			if(array[i] != Encrypt.SPACE){
-				sanitizedArray.add(array[i]);
+				sanitizedCipher.add(array[i]);
 			}
 		}
 
-		return sanitizedArray;
+		return sanitizedCipher;
 	}
 	
 	
@@ -227,8 +227,18 @@ public class Decrypt {
 	 * @return the length of the key
 	 */
 	public static int vigenereFindKeyLength(List<Byte> cipher) {
-		//TODO : COMPLETE THIS METHOD
-		return -1; //TODO: to be modified
+
+		ArrayList<Integer> maxima = localMaximaIndex(characterCoincidence(cipher));
+		int keyLength = 0;
+
+		for (int i = 0; i < (maxima.size()-1); i++){
+			keyLength += maxima.get(i+1)- maxima.get(i);
+		}
+
+		keyLength = (int) Math.ceil(((double)keyLength)/(maxima.size()-1));
+
+		return keyLength;
+
 	}
 
 	
@@ -244,6 +254,92 @@ public class Decrypt {
 		//TODO : COMPLETE THIS METHOD
 		return null; //TODO: to be modified
 	}
+
+
+
+	/**
+	 * Compare the cipher text with a shifted version of itself and compute how many letters coincide
+	 * @param cipher the byte array representing the encoded text
+	 * @return a List containing the coincidences for every shifted byte array.
+	 */
+	public static List<Integer> characterCoincidence(List<Byte> cipher) {
+
+		List<Integer> coincidences = new ArrayList<Integer>();
+
+		for (int shift = 1; shift < cipher.size() ; shift++){
+			int coincidence = 0;
+			for (int i = 0; i < (cipher.size()-shift); i++){
+				if(cipher.get(i).equals(cipher.get(i + shift))){
+					++coincidence;
+				}
+			}
+			coincidences.add(coincidence);
+		}
+
+		return coincidences;
+
+	}
+
+
+	/**
+	 * Find local maxima in the coincidence ArrayList
+	 * @param coincidenceList the Integer ArrayList representing the he coincidences for every shifted byte array
+	 * @return an ArrayList containing the index of each local maxima in the ArrayList.
+	 */
+	public static ArrayList<Integer> localMaximaIndex(List<Integer> coincidenceList) {
+
+		ArrayList<Integer> localMaxima = new ArrayList<Integer>();
+
+		for (int i = 0; i < Math.ceil(coincidenceList.size()/2); i++) {
+			int n = coincidenceList.get(i);
+			switch(i){
+				case 0 :
+					if (n>coincidenceList.get(1) && n>coincidenceList.get(2)){
+						localMaxima.add(0);
+					}
+					break;
+
+				case 1 :
+					if (n>coincidenceList.get(0) && n>coincidenceList.get(2) && n>coincidenceList.get(3)){
+						localMaxima.add(1);
+					}
+					break;
+
+				default :
+					if (n>coincidenceList.get(i-2) && n>coincidenceList.get(i-1) && n>coincidenceList.get(i+1) && n>coincidenceList.get(i+2)){
+						localMaxima.add(i);
+					}
+					break;
+
+			}
+		}
+
+		return localMaxima;
+
+	}
+
+
+
+	/**
+	 * Gives the index of space characters in the cipher array to add them after decoding the message
+	 * @param array the byte array representing the encoded text
+	 * @return an ArrayList containing the index of all space character bytes in the array.
+	 */
+	public static ArrayList<Integer> spacesMemorize(byte[] array) {
+
+		ArrayList<Integer> spaceIndex = new ArrayList<Integer>();
+		int index = 0;
+
+		for (byte character : array ) {
+			if(character == Encrypt.SPACE){
+				spaceIndex.add(index);
+			}
+			index++;
+		}
+
+		return spaceIndex;
+
+	}
 	
 	
 	//-----------------------Basic CBC-------------------------
@@ -258,13 +354,6 @@ public class Decrypt {
 		//TODO : COMPLETE THIS METHOD	
 		return null; //TODO: to be modified
 	}
-	
-	
-	
-
-		
-		
-		
 		
 		
 }

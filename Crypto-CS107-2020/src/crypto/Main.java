@@ -19,7 +19,7 @@ public class Main {
 
 
 		String inputMessage = Helper.readStringFromFile("text_one.txt");
-		String key = "2cF%5";
+		String key = "abcdefghijkl"; //"2cF%5";
 
 		String messageClean = cleanString(inputMessage);
 
@@ -41,12 +41,15 @@ public class Main {
 
 		System.out.println("------Vigenere------");
 		testVigenere(messageBytes, keyBytes);
+		System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(Helper.stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
 
-		System.out.println("------PAD------");
+		/*System.out.println("------PAD------");
 		System.out.println(bytesToString(Encrypt.generatePad(5)));
 
 		System.out.println("------OTP------");
-		testOTP(messageBytes);
+		testOTP(messageBytes);*/
+
+
 
 
 
@@ -115,6 +118,8 @@ public class Main {
 		String sD = bytesToString(Encrypt.vigenere(result, stringToBytes("Î\u009DºÛË")));
 		System.out.println("Decoded knowing the key : " + sD);
 
+		System.out.println("Decoded without knowing the key (key lenght) : ");
+		System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(result)));
 
 		/*//Decoding without key
 		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
