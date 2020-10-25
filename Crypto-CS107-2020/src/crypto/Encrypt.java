@@ -186,15 +186,17 @@ public class Encrypt {
 	public static byte[] vigenere(byte[] plainText, byte[] keyword, boolean spaceEncoding) {
 
 		byte[] encodedBytes = new byte[plainText.length];
+		int spaceShift = 0;
 
 		for(int i = 0; i< plainText.length; i++){
 			if(spaceEncoding){
 				encodedBytes[i] = (byte) (plainText[i] + keyword[i % keyword.length]);
 			} else {
 				if(plainText[i] != SPACE){
-					encodedBytes[i] = (byte) (plainText[i] + keyword[i % keyword.length]);
+					encodedBytes[i] = (byte) (plainText[i] + keyword[(i + (spaceShift * (keyword.length-1))) % keyword.length]);
 				} else {
 					encodedBytes[i] = plainText[i];
+					++spaceShift;
 				}
 			}
 		}

@@ -108,11 +108,12 @@ public class Main {
 		byte[] result = Encrypt.vigenere(string, key);
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
+		System.out.println("Exemple du diapo :");
+		System.out.println(Helper.bytesToString(Encrypt.vigenere(Helper.stringToBytes("bonne journée"), new byte[]{(byte) 1, (byte) 2, (byte) 3}, false)));
 
 		//Decoding with key
 		String sD = bytesToString(Encrypt.vigenere(result, stringToBytes("Î\u009DºÛË")));
 		System.out.println("Decoded knowing the key : " + sD);
-
 
 
 		/*//Decoding without key
