@@ -4,7 +4,6 @@ import static crypto.Helper.bytesToString;
 import static crypto.Helper.stringToBytes;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,8 +196,17 @@ public class Decrypt {
 	 * @return the byte encoding of the clear text
 	 */
 	public static byte[] vigenereWithFrequencies(byte[] cipher) {
-		//TODO : COMPLETE THIS METHOD
-		return null; //TODO: to be modified
+
+		byte[] cipherKey = vigenereFindKey(removeSpaces(cipher), vigenereFindKeyLength(removeSpaces(cipher)));
+
+		byte[] decodedByteWithoutSpace = new byte[removeSpaces(cipher).size()];
+
+		for(int i = 0; i< cipherKey.length; i++) {
+			decodedByteWithoutSpace[i] = (byte) (cipher[i] - cipherKey[i % cipherKey.length]);
+		}
+
+		return decodedByteWithoutSpace;
+
 	}
 	
 	
@@ -231,11 +239,17 @@ public class Decrypt {
 		ArrayList<Integer> maxima = localMaximaIndex(characterCoincidence(cipher));
 		int keyLength = 0;
 
-		for (int i = 0; i < (maxima.size()-1); i++){
-			keyLength += maxima.get(i+1)- maxima.get(i);
+		if (maxima.size()>1){
+			for (int i = 0; i < (maxima.size()-1); i++){
+				keyLength += maxima.get(i+1)- maxima.get(i);
+			}
+
+			keyLength = (int) Math.ceil(((double)keyLength)/(maxima.size()-1));
+
+		} else {
+			keyLength = maxima.get(0)+1;
 		}
 
-		keyLength = (int) Math.ceil(((double)keyLength)/(maxima.size()-1));
 
 		return keyLength;
 
@@ -251,8 +265,21 @@ public class Decrypt {
 	 * @return the inverse key to decode the Vigenere cipher text
 	 */
 	public static byte[] vigenereFindKey(List<Byte> cipher, int keyLength) {
-		//TODO : COMPLETE THIS METHOD
-		return null; //TODO: to be modified
+
+		byte[] key = new byte[keyLength];
+
+		for(int i = 0; i<keyLength; i++){
+			byte[] cipherChar = new byte[(int)Math.ceil(cipher.size()/keyLength)+1];
+			int j = 0;
+			for(int charIndex = i; charIndex< cipher.size(); charIndex += keyLength){
+				cipherChar[j] = cipher.get(charIndex);
+				j++;
+			}
+
+			key[i] = caesarWithFrequencies(cipherChar);
+		}
+
+		return key;
 	}
 
 
@@ -267,12 +294,13 @@ public class Decrypt {
 		List<Integer> coincidences = new ArrayList<Integer>();
 
 		for (int shift = 1; shift < cipher.size() ; shift++){
-			int coincidence = 0;
+			int coincidence = 0;//-15;
 			for (int i = 0; i < (cipher.size()-shift); i++){
 				if(cipher.get(i).equals(cipher.get(i + shift))){
 					++coincidence;
 				}
 			}
+//			if (coincidence < 0) coincidence = 0;
 			coincidences.add(coincidence);
 		}
 
@@ -290,7 +318,7 @@ public class Decrypt {
 
 		ArrayList<Integer> localMaxima = new ArrayList<Integer>();
 
-		for (int i = 0; i < Math.ceil(coincidenceList.size()/2); i++) {
+		for (int i = 0; i <= Math.ceil(coincidenceList.size()/2); i++) {
 			int n = coincidenceList.get(i);
 			switch(i){
 				case 0 :
@@ -313,6 +341,8 @@ public class Decrypt {
 
 			}
 		}
+
+
 
 		return localMaxima;
 
