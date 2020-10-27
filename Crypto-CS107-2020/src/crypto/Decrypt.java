@@ -381,8 +381,60 @@ public class Decrypt {
 	 * @return the clear text
 	 */
 	public static byte[] decryptCBC(byte[] cipher, byte[] iv) {
-		//TODO : COMPLETE THIS METHOD	
-		return null; //TODO: to be modified
+		byte[] decodedBytes = new byte[cipher.length];
+		int alreadyDecodedBytes = 0;
+		
+		boolean decodedBytesListFullyCompleted = false;
+		int blockDone = 0;
+		byte [][] allBlocks = new byte[cipher.length][cipher.length]; //Taille maximale
+		
+		while(!decodedBytesListFullyCompleted)
+		{
+			
+			// Decodage jusqu'au T ème byte. T étant la taille du pad
+		
+			for(int padIndex = 0 , decodedBytesNumber1 = alreadyDecodedBytes ; padIndex < iv.length ; ++padIndex , ++ decodedBytesNumber1)
+			{
+				if(decodedBytesNumber1 < cipher.length) //Eviter le Out Of Bound
+				{
+					allBlocks[blockDone][padIndex] =(byte)(cipher[decodedBytesNumber1] ^ iv[padIndex]); // On génère la T ème partie encodée
+				}
+			}
+			
+			// Le ième block chiffré devient le nouveau PAD
+			for(int m = 0, decodedBytesNumber3 = alreadyDecodedBytes; m < iv.length; ++m , ++decodedBytesNumber3) 
+			{
+				if(decodedBytesNumber3 < decodedBytes.length) // Eviter Out Of Bound
+				{
+					iv[m] = cipher[decodedBytesNumber3];
+				}
+			}
+			
+			//On transfert les caractères de AllBlocks dans le tableau unidimensionel des caractères décodés (decodedBytes)
+			
+			for(int j = 0 , decodedBytesNumber2 = alreadyDecodedBytes ; j < iv.length; j++ , ++decodedBytesNumber2)
+			{
+				if(decodedBytesNumber2 < decodedBytes.length) //Eviter le Out Of Bound
+				{
+					decodedBytes[decodedBytesNumber2] = allBlocks[blockDone][j];
+				}
+			}
+			
+			
+			alreadyDecodedBytes += iv.length;
+			
+			//Vérifie si le texte est toalement déchiffré, auquel cas, on s'arrête
+			
+			if (decodedBytes[(decodedBytes.length)-1]!= 0) // Si la dernière valeur de la liste est différente de 0 (valeur par défault)
+			{
+				decodedBytesListFullyCompleted = true;  // L'intégralité du message a été chiffré, on s'arrête comme promis.
+			}
+			
+			blockDone += 1;
+		
+		}
+		
+		return decodedBytes;
 	}
 		
 		
