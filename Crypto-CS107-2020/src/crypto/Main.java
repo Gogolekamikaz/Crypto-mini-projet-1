@@ -120,7 +120,7 @@ public class Main {
 
 		System.out.println("Decoded without knowing the key (key lenght) : ");
 		System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(result)));
-		//System.out.println(bytesToString(Decrypt.vigenereFindKey(Decrypt.removeSpaces(result), Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(result)))));
+		System.out.println(bytesToString(Decrypt.vigenereFindKey(Decrypt.removeSpaces(result), Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(result)))));
 		System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(result)));
 
 		/*//Decoding without key

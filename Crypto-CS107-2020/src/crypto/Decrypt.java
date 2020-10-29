@@ -35,18 +35,16 @@ public class Decrypt {
 	 */
 	public static String arrayToString(byte[][] bruteForceResult) {
 		String bruteForceStringResult = "";
-		
-		for(int keyNumber = 0; keyNumber<bruteForceResult.length; ++keyNumber)
-		{
+
+		for (int keyNumber = 0; keyNumber < bruteForceResult.length; ++keyNumber) {
 			byte decodedBytes[] = new byte[bruteForceResult[0].length]; //Taille du tableau des bytes encodés
-			for(int byteIndex = 0; byteIndex < bruteForceResult[0].length; ++ byteIndex)
-			{
+			for (int byteIndex = 0; byteIndex < bruteForceResult[0].length; ++byteIndex) {
 				decodedBytes[byteIndex] = bruteForceResult[keyNumber][byteIndex];
 			}
 			String byteTableString = Helper.bytesToString(decodedBytes); //Associe le i ème tableau de bytes à ses Strings
-			
-			bruteForceStringResult += " - - - - - /!\\ TRY N°"+ (int)(keyNumber+1)+"/!\\ - - - - - "+ System.lineSeparator() + byteTableString + System.lineSeparator(); //Ajoute l'équivalene en String du i ème tableau au texte final qui sera affiché
-			
+
+			bruteForceStringResult += " - - - - - /!\\ TRY N°" + (int) (keyNumber + 1) + "/!\\ - - - - - " + System.lineSeparator() + byteTableString + System.lineSeparator(); //Ajoute l'équivalene en String du i ème tableau au texte final qui sera affiché
+
 		}
 		return bruteForceStringResult;
 	}
@@ -61,18 +59,13 @@ public class Decrypt {
 	 * @return a 2D byte array containing all the possibilities
 	 */
 	public static byte[][] caesarBruteForce(byte[] cipher) {
-		byte[][] decodedPossibilities = new byte[256][cipher.length]; 
-		for(int keyTry = -128; keyTry <128; ++keyTry)
-		{
-			for(int encodedByteIndex = 0; encodedByteIndex < cipher.length; ++ encodedByteIndex)
-			{
-				if(cipher[encodedByteIndex] != Encrypt.SPACE)
-				{
-					decodedPossibilities[keyTry+128][encodedByteIndex] = (byte)(cipher[encodedByteIndex] - keyTry);
-				}
-				else 
-				{
-					decodedPossibilities[keyTry+128][encodedByteIndex] = (byte)(cipher[encodedByteIndex]);
+		byte[][] decodedPossibilities = new byte[256][cipher.length];
+		for (int keyTry = -128; keyTry < 128; ++keyTry) {
+			for (int encodedByteIndex = 0; encodedByteIndex < cipher.length; ++encodedByteIndex) {
+				if (cipher[encodedByteIndex] != Encrypt.SPACE) {
+					decodedPossibilities[keyTry + 128][encodedByteIndex] = (byte) (cipher[encodedByteIndex] - keyTry);
+				} else {
+					decodedPossibilities[keyTry + 128][encodedByteIndex] = (byte) (cipher[encodedByteIndex]);
 				}
 			}
 		}
@@ -142,25 +135,24 @@ public class Decrypt {
 	 * @return the key
 	 */
 	public static byte caesarFindKey(float[] charFrequencies) {
-		
+
 		float produitScalaireMaximal = 0;
 		int indiceProduitScalaireMaximal = 0;
-		for(int frequencieIndex = 0; frequencieIndex < ALPHABETSIZE; ++ frequencieIndex)
-		{
+
+		for (int frequencieIndex = 0; frequencieIndex < ALPHABETSIZE; ++frequencieIndex) {
 			float produitScalaire = 0;
-			for(int m = frequencieIndex , englishFrequencieIndex = 0; englishFrequencieIndex < ENGLISHFREQUENCIES.length;  m++ , ++englishFrequencieIndex)
-			{
-				m = m%256;
-				produitScalaire += charFrequencies[m]* ENGLISHFREQUENCIES[englishFrequencieIndex];
+			for (int m = frequencieIndex, englishFrequencieIndex = 0; englishFrequencieIndex < ENGLISHFREQUENCIES.length; m++, ++englishFrequencieIndex) {
+				m = m % 256;
+				produitScalaire += charFrequencies[m] * ENGLISHFREQUENCIES[englishFrequencieIndex];
 			}
-			if(produitScalaire > produitScalaireMaximal)
-			{
+			if (produitScalaire > produitScalaireMaximal) {
 				produitScalaireMaximal = produitScalaire;
 				indiceProduitScalaireMaximal = frequencieIndex;
-			}	
+			}
 		}
-		byte key = (byte)(indiceProduitScalaireMaximal - APOSITION);
-		
+
+		byte key = (byte) (indiceProduitScalaireMaximal - APOSITION);
+
 		return key;
 	}
 	
@@ -178,8 +170,8 @@ public class Decrypt {
 
 		byte[][] results = new byte[ALPHABETSIZE][cipher.length];
 
-		for(int i = 0; i< results.length; i++){
-			results[i] = Encrypt.xor(cipher, (byte)i);
+		for (int i = 0; i < results.length; i++) {
+			results[i] = Encrypt.xor(cipher, (byte) i);
 		}
 
 		return results;
@@ -197,15 +189,22 @@ public class Decrypt {
 	 */
 	public static byte[] vigenereWithFrequencies(byte[] cipher) {
 
-		byte[] cipherKey = vigenereFindKey(removeSpaces(cipher), vigenereFindKeyLength(removeSpaces(cipher)));
+		List<Byte> cipherByteWithoutSpace = removeSpaces(cipher);
+		byte[] cipherKey = vigenereFindKey(cipherByteWithoutSpace, vigenereFindKeyLength(cipherByteWithoutSpace));
+		ArrayList<Integer> spacesIndex = spacesMemorize(cipher);
+		byte[] decodedCipher = new byte[cipher.length];
+		int spaceShift = 0;
 
-		byte[] decodedByteWithoutSpace = new byte[removeSpaces(cipher).size()];
-
-		for(int i = 0; i< cipherKey.length; i++) {
-			decodedByteWithoutSpace[i] = (byte) (cipher[i] - cipherKey[i % cipherKey.length]);
+		for (int i = 0; i < decodedCipher.length; i++) {
+			if (spacesIndex.indexOf(i) != -1) {
+				decodedCipher[i] = Encrypt.SPACE;
+				++spaceShift;
+			} else {
+				decodedCipher[i] = (byte) (cipherByteWithoutSpace.get(i-spaceShift) - cipherKey[(i-spaceShift) % cipherKey.length]);
+			}
 		}
 
-		return decodedByteWithoutSpace;
+		return decodedCipher;
 
 	}
 	
@@ -216,11 +215,12 @@ public class Decrypt {
 	 * @param array the array to clean
 	 * @return a List of bytes without spaces
 	 */
-	public static List<Byte> removeSpaces(byte[] array){
+	public static List<Byte> removeSpaces(byte[] array) {
+
 		List<Byte> sanitizedCipher = new ArrayList<Byte>();
 
-		for (int i = 0; i<array.length; i++){
-			if(array[i] != Encrypt.SPACE){
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] != Encrypt.SPACE) {
 				sanitizedCipher.add(array[i]);
 			}
 		}
@@ -239,15 +239,15 @@ public class Decrypt {
 		ArrayList<Integer> maxima = localMaximaIndex(characterCoincidence(cipher));
 		int keyLength = 0;
 
-		if (maxima.size()>1){
-			for (int i = 0; i < (maxima.size()-1); i++){
-				keyLength += maxima.get(i+1)- maxima.get(i);
+		if (maxima.size() > 1) {
+			for (int i = 0; i < (maxima.size() - 1); i++) {
+				keyLength += maxima.get(i + 1) - maxima.get(i);
 			}
 
-			keyLength = (int) Math.ceil(((double)keyLength)/(maxima.size()-1));
+			keyLength = (int) Math.ceil(((double) keyLength) / (maxima.size() - 1));
 
 		} else {
-			keyLength = maxima.get(0)+1;
+			keyLength = maxima.get(0) + 1;
 		}
 
 
@@ -268,10 +268,10 @@ public class Decrypt {
 
 		byte[] key = new byte[keyLength];
 
-		for(int i = 0; i<keyLength; i++){
-			byte[] cipherChar = new byte[(int)Math.ceil(cipher.size()/keyLength)+1];
+		for (int i = 0; i < keyLength; i++) {
+			byte[] cipherChar = new byte[(int) Math.ceil(cipher.size() / keyLength) + 1];
 			int j = 0;
-			for(int charIndex = i; charIndex< cipher.size(); charIndex += keyLength){
+			for (int charIndex = i; charIndex < cipher.size(); charIndex += keyLength) {
 				cipherChar[j] = cipher.get(charIndex);
 				j++;
 			}
@@ -293,14 +293,13 @@ public class Decrypt {
 
 		List<Integer> coincidences = new ArrayList<Integer>();
 
-		for (int shift = 1; shift < cipher.size() ; shift++){
+		for (int shift = 1; shift < cipher.size(); shift++) {
 			int coincidence = 0;//-15;
-			for (int i = 0; i < (cipher.size()-shift); i++){
-				if(cipher.get(i).equals(cipher.get(i + shift))){
+			for (int i = 0; i < (cipher.size() - shift); i++) {
+				if (cipher.get(i).equals(cipher.get(i + shift))) {
 					++coincidence;
 				}
 			}
-//			if (coincidence < 0) coincidence = 0;
 			coincidences.add(coincidence);
 		}
 
@@ -318,30 +317,29 @@ public class Decrypt {
 
 		ArrayList<Integer> localMaxima = new ArrayList<Integer>();
 
-		for (int i = 0; i <= Math.ceil(coincidenceList.size()/2); i++) {
+		for (int i = 0; i <= Math.ceil(coincidenceList.size() / 2); i++) {
 			int n = coincidenceList.get(i);
-			switch(i){
-				case 0 :
-					if (n>coincidenceList.get(1) && n>coincidenceList.get(2)){
+			switch (i) {
+				case 0:
+					if (n > coincidenceList.get(1) && n > coincidenceList.get(2)) {
 						localMaxima.add(0);
 					}
 					break;
 
-				case 1 :
-					if (n>coincidenceList.get(0) && n>coincidenceList.get(2) && n>coincidenceList.get(3)){
+				case 1:
+					if (n > coincidenceList.get(0) && n > coincidenceList.get(2) && n > coincidenceList.get(3)) {
 						localMaxima.add(1);
 					}
 					break;
 
-				default :
-					if (n>coincidenceList.get(i-2) && n>coincidenceList.get(i-1) && n>coincidenceList.get(i+1) && n>coincidenceList.get(i+2)){
+				default:
+					if (n > coincidenceList.get(i - 2) && n > coincidenceList.get(i - 1) && n > coincidenceList.get(i + 1) && n > coincidenceList.get(i + 2)) {
 						localMaxima.add(i);
 					}
 					break;
 
 			}
 		}
-
 
 
 		return localMaxima;
@@ -360,8 +358,8 @@ public class Decrypt {
 		ArrayList<Integer> spaceIndex = new ArrayList<Integer>();
 		int index = 0;
 
-		for (byte character : array ) {
-			if(character == Encrypt.SPACE){
+		for (byte character : array) {
+			if (character == Encrypt.SPACE) {
 				spaceIndex.add(index);
 			}
 			index++;
@@ -383,57 +381,53 @@ public class Decrypt {
 	public static byte[] decryptCBC(byte[] cipher, byte[] iv) {
 		byte[] decodedBytes = new byte[cipher.length];
 		int alreadyDecodedBytes = 0;
-		
+
 		boolean decodedBytesListFullyCompleted = false;
 		int blockDone = 0;
-		byte [][] allBlocks = new byte[cipher.length][cipher.length]; //Taille maximale
-		
-		while(!decodedBytesListFullyCompleted)
-		{
-			
+		byte[][] allBlocks = new byte[cipher.length][cipher.length]; //Taille maximale
+
+		while (!decodedBytesListFullyCompleted) {
+
 			// Decodage jusqu'au T ème byte. T étant la taille du pad
-		
-			for(int padIndex = 0 , decodedBytesNumber1 = alreadyDecodedBytes ; padIndex < iv.length ; ++padIndex , ++ decodedBytesNumber1)
-			{
-				if(decodedBytesNumber1 < cipher.length) //Eviter le Out Of Bound
+
+			for (int padIndex = 0, decodedBytesNumber1 = alreadyDecodedBytes; padIndex < iv.length; ++padIndex, ++decodedBytesNumber1) {
+				if (decodedBytesNumber1 < cipher.length) //Eviter le Out Of Bound
 				{
-					allBlocks[blockDone][padIndex] =(byte)(cipher[decodedBytesNumber1] ^ iv[padIndex]); // On génère la T ème partie encodée
+					allBlocks[blockDone][padIndex] = (byte) (cipher[decodedBytesNumber1] ^ iv[padIndex]); // On génère la T ème partie encodée
 				}
 			}
-			
+
 			// Le ième block chiffré devient le nouveau PAD
-			for(int m = 0, decodedBytesNumber3 = alreadyDecodedBytes; m < iv.length; ++m , ++decodedBytesNumber3) 
-			{
-				if(decodedBytesNumber3 < decodedBytes.length) // Eviter Out Of Bound
+			for (int m = 0, decodedBytesNumber3 = alreadyDecodedBytes; m < iv.length; ++m, ++decodedBytesNumber3) {
+				if (decodedBytesNumber3 < decodedBytes.length) // Eviter Out Of Bound
 				{
 					iv[m] = cipher[decodedBytesNumber3];
 				}
 			}
-			
+
 			//On transfert les caractères de AllBlocks dans le tableau unidimensionel des caractères décodés (decodedBytes)
-			
-			for(int j = 0 , decodedBytesNumber2 = alreadyDecodedBytes ; j < iv.length; j++ , ++decodedBytesNumber2)
-			{
-				if(decodedBytesNumber2 < decodedBytes.length) //Eviter le Out Of Bound
+
+			for (int j = 0, decodedBytesNumber2 = alreadyDecodedBytes; j < iv.length; j++, ++decodedBytesNumber2) {
+				if (decodedBytesNumber2 < decodedBytes.length) //Eviter le Out Of Bound
 				{
 					decodedBytes[decodedBytesNumber2] = allBlocks[blockDone][j];
 				}
 			}
-			
-			
+
+
 			alreadyDecodedBytes += iv.length;
-			
+
 			//Vérifie si le texte est toalement déchiffré, auquel cas, on s'arrête
-			
-			if (decodedBytes[(decodedBytes.length)-1]!= 0) // Si la dernière valeur de la liste est différente de 0 (valeur par défault)
+
+			if (decodedBytes[(decodedBytes.length) - 1] != 0) // Si la dernière valeur de la liste est différente de 0 (valeur par défault)
 			{
 				decodedBytesListFullyCompleted = true;  // L'intégralité du message a été chiffré, on s'arrête comme promis.
 			}
-			
+
 			blockDone += 1;
-		
+
 		}
-		
+
 		return decodedBytes;
 	}
 		
