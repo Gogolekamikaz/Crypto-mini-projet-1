@@ -250,7 +250,6 @@ public class Decrypt {
 			keyLength = maxima.get(0) + 1;
 		}
 
-
 		return keyLength;
 
 	}
@@ -379,6 +378,7 @@ public class Decrypt {
 	 * @return the clear text
 	 */
 	public static byte[] decryptCBC(byte[] cipher, byte[] iv) {
+
 		byte[] decodedBytes = new byte[cipher.length];
 		int alreadyDecodedBytes = 0;
 		
@@ -400,7 +400,7 @@ public class Decrypt {
 				if (decodedBytesNumber1 < cipher.length) //Eviter le Out Of Bound
 				{
 					allBlocks[blockDone][padIndex] = (byte) (cipher[decodedBytesNumber1] ^ ivUtilisation[padIndex]); // On génère la T ème partie encodée
-				}
+					 }
 			}
 
 			// Le ième block chiffré devient le nouveau PAD

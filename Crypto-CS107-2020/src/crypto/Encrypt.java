@@ -193,7 +193,7 @@ public class Encrypt {
 				encodedBytes[i] = (byte) (plainText[i] + keyword[i % keyword.length]);
 			} else {
 				if(plainText[i] != SPACE){
-					encodedBytes[i] = (byte) (plainText[i] + keyword[(i + (spaceShift * (keyword.length-1))) % keyword.length]);
+					encodedBytes[i] = (byte) ((plainText[i] + keyword[(i + (spaceShift * (keyword.length-1))) % keyword.length]));
 				} else {
 					encodedBytes[i] = plainText[i];
 					++spaceShift;
@@ -264,39 +264,34 @@ public class Encrypt {
 		boolean encodedBytesListFullyCompleted = false;
 		int blockDone = 0;
 		byte [][] allBlocks = new byte[plainText.length][plainText.length]; //Taille maximale
-		
+
 		byte[] ivUtilisation = new byte[iv.length];
 		for(int z = 0; z < iv.length; ++z )
 		{
 			ivUtilisation[z] = iv[z];
 		}
-		
+
 		while(!encodedBytesListFullyCompleted) // Assez explicite pour ne pas avoir besoin de commenter ? (je le fais quand même au final hihihihi) Je te salue si tu passes par ces contrées mon pote Ugo
 		{
-			
-			
 			// Encodage jusqu'au T ème byte. T étant la taille du pad
-		
-			for(int padIndex = 0 , encodedBytesNumber1 = alreadyEncodedBytes ; padIndex < iv.length ; ++padIndex , ++ encodedBytesNumber1)
-			{
-				if(encodedBytesNumber1 < plainText.length) //Eviter le Out Of Bound
+
+			for (int padIndex = 0, encodedBytesNumber1 = alreadyEncodedBytes; padIndex < iv.length; ++padIndex, ++encodedBytesNumber1) {
+				if (encodedBytesNumber1 < plainText.length) //Eviter le Out Of Bound
 				{
-					allBlocks[blockDone][padIndex] =(byte)(plainText[encodedBytesNumber1] ^ ivUtilisation[padIndex]); // On génère la T ème partie encodée
+					allBlocks[blockDone][padIndex] = (byte) (plainText[encodedBytesNumber1] ^ ivUtilisation[padIndex]); // On génère la T ème partie encodée
 				}
-				
+
 			}
-			
+
 			// On transforme maintenant les bytes encodés précédemment en nouveau PAD qui sera utilisé par la suite
-			for(int m = 0; m < iv.length; ++m) 
-			{
+			for (int m = 0; m < iv.length; ++m) {
 				ivUtilisation[m] = allBlocks[blockDone][m];
 			}
-			
+
 			//On transfert les caractères de AllBlocks dans le tableu unidimensionel des caractères encodés (encodedBytes)
-			
-			for(int j = 0 , encodedBytesNumber2 = alreadyEncodedBytes ; j < iv.length; j++ , ++encodedBytesNumber2)
-			{
-				if(encodedBytesNumber2 < encodedBytes.length) //Eviter le Out Of Bound
+
+			for (int j = 0, encodedBytesNumber2 = alreadyEncodedBytes; j < iv.length; j++, ++encodedBytesNumber2) {
+				if (encodedBytesNumber2 < encodedBytes.length) //Eviter le Out Of Bound
 				{
 					encodedBytes[encodedBytesNumber2] = allBlocks[blockDone][j];
 				}
@@ -304,20 +299,19 @@ public class Encrypt {
 			
 			
 			alreadyEncodedBytes += iv.length;
-			
-			
-			
+
+
 			//Vérifie si le texte est toalement chiffré, auquel cas, on s'arrête
-			
-			if (encodedBytes[(encodedBytes.length)-1]!= 0) // Si la dernière valeur de la liste est différente de 0 (valeur par défault)
+
+			if (encodedBytes[(encodedBytes.length) - 1] != 0) // Si la dernière valeur de la liste est différente de 0 (valeur par défault)
 			{
 				encodedBytesListFullyCompleted = true;  // L'intégralité du message a été chiffré, on s'arrête comme promis.
 			}
-			
+
 			blockDone += 1;
-		
+
 		}
-		
+
 		return encodedBytes;
 
 	}
