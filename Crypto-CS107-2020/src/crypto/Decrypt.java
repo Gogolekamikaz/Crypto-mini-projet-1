@@ -381,7 +381,13 @@ public class Decrypt {
 	public static byte[] decryptCBC(byte[] cipher, byte[] iv) {
 		byte[] decodedBytes = new byte[cipher.length];
 		int alreadyDecodedBytes = 0;
-
+		
+		byte[] ivUtilisation = new byte[iv.length];
+		for(int z = 0; z < iv.length; ++z )
+		{
+			ivUtilisation[z] = iv[z];
+		}
+		
 		boolean decodedBytesListFullyCompleted = false;
 		int blockDone = 0;
 		byte[][] allBlocks = new byte[cipher.length][cipher.length]; //Taille maximale
@@ -393,7 +399,7 @@ public class Decrypt {
 			for (int padIndex = 0, decodedBytesNumber1 = alreadyDecodedBytes; padIndex < iv.length; ++padIndex, ++decodedBytesNumber1) {
 				if (decodedBytesNumber1 < cipher.length) //Eviter le Out Of Bound
 				{
-					allBlocks[blockDone][padIndex] = (byte) (cipher[decodedBytesNumber1] ^ iv[padIndex]); // On génère la T ème partie encodée
+					allBlocks[blockDone][padIndex] = (byte) (cipher[decodedBytesNumber1] ^ ivUtilisation[padIndex]); // On génère la T ème partie encodée
 				}
 			}
 
@@ -401,7 +407,7 @@ public class Decrypt {
 			for (int m = 0, decodedBytesNumber3 = alreadyDecodedBytes; m < iv.length; ++m, ++decodedBytesNumber3) {
 				if (decodedBytesNumber3 < decodedBytes.length) // Eviter Out Of Bound
 				{
-					iv[m] = cipher[decodedBytesNumber3];
+					ivUtilisation[m] = cipher[decodedBytesNumber3];
 				}
 			}
 
