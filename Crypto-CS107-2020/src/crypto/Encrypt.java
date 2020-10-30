@@ -265,6 +265,12 @@ public class Encrypt {
 		int blockDone = 0;
 		byte [][] allBlocks = new byte[plainText.length][plainText.length]; //Taille maximale
 		
+		byte[] ivUtilisation = new byte[iv.length];
+		for(int z = 0; z < iv.length; ++z )
+		{
+			ivUtilisation[z] = iv[z];
+		}
+		
 		while(!encodedBytesListFullyCompleted) // Assez explicite pour ne pas avoir besoin de commenter ? (je le fais quand même au final hihihihi) Je te salue si tu passes par ces contrées mon pote Ugo
 		{
 			
@@ -275,7 +281,7 @@ public class Encrypt {
 			{
 				if(encodedBytesNumber1 < plainText.length) //Eviter le Out Of Bound
 				{
-					allBlocks[blockDone][padIndex] =(byte)(plainText[encodedBytesNumber1] ^ iv[padIndex]); // On génère la T ème partie encodée
+					allBlocks[blockDone][padIndex] =(byte)(plainText[encodedBytesNumber1] ^ ivUtilisation[padIndex]); // On génère la T ème partie encodée
 				}
 				
 			}
@@ -283,7 +289,7 @@ public class Encrypt {
 			// On transforme maintenant les bytes encodés précédemment en nouveau PAD qui sera utilisé par la suite
 			for(int m = 0; m < iv.length; ++m) 
 			{
-				iv[m] = allBlocks[blockDone][m];
+				ivUtilisation[m] = allBlocks[blockDone][m];
 			}
 			
 			//On transfert les caractères de AllBlocks dans le tableu unidimensionel des caractères encodés (encodedBytes)
