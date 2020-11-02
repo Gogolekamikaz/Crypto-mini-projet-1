@@ -131,11 +131,33 @@ public class UI {
 	
 	public static void AskInfoAndCipher(int type)
 	{
+		int[] acceptedNumber = {1,2};
 		Scanner input2 = new Scanner(System.in);
 		System.out.println("Renseignez le mot que vous désirer chiffrer : ");
 		String wordToCipher = input2.nextLine();
-		System.out.println("Entrez votre clé de chiffrement ou PAD en String : ");
-		String key = input2.nextLine();
+		String key = "";
+		
+		if(type == 3 || type == 4)
+		{
+			int choixGenerationPad = askChoice("Souhaitez vous :\n[1] Générer un PAD aléatoirement\n[2] Spécifier vous même votre PAD", acceptedNumber);
+			if(choixGenerationPad == 1)
+			{
+				System.out.println("Entrez la taille du PAD (nécessairement inférieure à la taille de votre mot) : ");
+				int size = input2.nextInt();
+				key = Helper.bytesToString(Encrypt.generatePad(size));
+			}
+			
+			else if (choixGenerationPad == 2)
+			{
+				System.out.println("Entrez votre PAD sous forme de String ici : ");
+				key = input2.nextLine();
+				
+			}
+		}
+		else {
+			System.out.println("Entrez votre clé en String : ");
+			key = input2.nextLine();
+		}
 		
 		String CipheredWord = Encrypt.encrypt(wordToCipher, key, type);
 		
