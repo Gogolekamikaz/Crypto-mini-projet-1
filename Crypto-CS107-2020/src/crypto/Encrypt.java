@@ -28,7 +28,7 @@ public class Encrypt {
 	 */
 	public static String encrypt(String message, String key, int type) {
 		byte[] inputKeyTable = Helper.stringToBytes(key); // /!\ Tableau des clés (input utilisateur)
-		byte[] plainText = Helper.stringToBytes(message);
+		byte[] plainText = Helper.stringToBytes(Helper.cleanString(message));
 		
 		// Generation du tableau des clés valides (modulo 256)
 		byte[] validKeyTable = new byte[inputKeyTable.length]; // Tableau "validé" avec les modulo. C'est peut être inutile en vrai...
