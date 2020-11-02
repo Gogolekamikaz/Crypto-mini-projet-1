@@ -66,7 +66,10 @@ public class Encrypt {
 			//TODO : Complete the function
 
 			case CBC:
-				return null;
+				byte[] bytePAD = Helper.stringToBytes(key);
+				byte[] encodedBytes = cbc(plainText , bytePAD);						
+				String encodedString = Helper.bytesToString(encodedBytes);
+				return encodedString;
 
 			default:
 				return null;
