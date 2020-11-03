@@ -1,6 +1,5 @@
 Bonjour, nous créons ce fichier pour vous informer des bonus que nous avons choisi d'effectuer, dans le cadre du mini projet.
 
-- Interface Utilisateur en console : fichier UI.java. Demande à l'utilisateur s'il veut chiffrer, déchiffrer un message et lui propose en fonction un panel de méthodes
-de chiffrement/déchiffrement en adéquation avec ce qu'il convenait de faire pour le MP1.
+- Interface Utilisateur en console : fichier UI.java. Demande à l'utilisateur s'il veut chiffrer, déchiffrer un message et lui propose en fonction un panel de méthodes de chiffrement/déchiffrement en adéquation avec ce qu'il convenait de faire pour le MP1.
 
 - Chiffrement Vigenère Avancé : (Je te laisse écrire Ugo)
