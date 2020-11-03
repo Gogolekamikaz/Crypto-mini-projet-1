@@ -112,6 +112,38 @@ public class Helper {
 		  return string;
 		  
 	}
+
+	/**
+	 * Method to read a file into a string
+	 * @param fileName the name of the file
+	 * @param folder the folder of the file in the project
+	 */
+	public static String readStringFromFile(String fileName, String folder) {
+		String string= "";
+		File file = new File(folder+SEP+fileName);
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+
+			String temp;
+			boolean checkFirst = false;
+			while((temp = br.readLine())!= null) {
+				if(checkFirst) {
+					string += (" " + temp);
+				}else {
+					string += temp;
+					checkFirst = true;
+				}
+			}
+
+			br.close();
+
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return string;
+
+	}
 	
 	
 }

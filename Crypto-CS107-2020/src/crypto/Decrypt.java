@@ -1,19 +1,26 @@
 package crypto;
 
-import static crypto.Helper.bytesToString;
-import static crypto.Helper.stringToBytes;
-
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+
+import static crypto.Helper.*;
 
 public class Decrypt {
 	
 	
 	public static final int ALPHABETSIZE = Byte.MAX_VALUE - Byte.MIN_VALUE + 1 ; //256
 	public static final int APOSITION = 97 + ALPHABETSIZE/2; 
-	
+
+	public static final String[] LANGUAGES = {"French", "English", "German", "Italian", "Spanish"};
 	//source : https://en.wikipedia.org/wiki/Letter_frequency
 	public static final double[] ENGLISHFREQUENCIES = {0.08497,0.01492,0.02202,0.04253,0.11162,0.02228,0.02015,0.06094,0.07546,0.00153,0.01292,0.04025,0.02406,0.06749,0.07507,0.01929,0.00095,0.07587,0.06327,0.09356,0.02758,0.00978,0.0256,0.0015,0.01994,0.00077};
+	public static final double[][] LANGUAGEFREQUENCIES = {{0.07636,0.00901,0.03260,0.03669,0.14715,0.01066,0.00866,0.00737,0.07529,0.00613,0.00074,0.05456,0.02968,0.07095,0.05796,0.02521,0.01362,0.06693,0.07948,0.07244,0.06311,0.01838,0.00049,0.00427,0.00128,0.00326},
+														  ENGLISHFREQUENCIES,
+														  {0.06516,0.01886,0.02732,0.05076,0.16396,0.01656,0.03009,0.04577,0.06550,0.00268,0.01417,0.03437,0.02534,0.09776,0.02594,0.00670,0.00018,0.07003,0.07270,0.06154,0.04166,0.00846,0.01921,0.00034,0.00039,0.01134},
+														  {0.11745,0.00927,0.04501,0.03736,0.11792,0.01153,0.01644,0.00636,0.10143,0.00011,0.00009,0.06510,0.02994,0.06883,0.09832,0.03056,0.00505,0.06367,0.04981,0.05623,0.03011,0.02097,0.00033,0.00003,0.00020,0.01181},
+														  {0.11525,0.02215,0.04019,0.05010,0.12181,0.00692,0.01768,0.00703,0.06247,0.00493,0.00011,0.04967,0.03157,0.06712,0.08683,0.02510,0.00877,0.06871,0.07977,0.04632,0.02927,0.01138,0.00017,0.00215,0.01008,0.00467}};
 	
 	/**
 	 * Method to break a string encoded with different types of cryptosystems
@@ -112,6 +119,17 @@ public class Decrypt {
 		float[] frequencies = computeFrequencies(cipherText);
 		return caesarFindKey(frequencies);
 	}
+
+	/**
+	 * Method that finds the key to decode a Caesar encoding by comparing frequencies
+	 * @param cipherText the byte array representing the encoded text
+	 * @param languageFrequencies the frequencies of letters for a particular language
+	 * @return the encoding key
+	 */
+	public static byte caesarWithFrequencies(byte[] cipherText, double[] languageFrequencies) {
+		float[] frequencies = computeFrequencies(cipherText);
+		return caesarFindKey(frequencies, languageFrequencies);
+	}
 	
 	/**
 	 * Method that computes the frequencies of letters inside a byte array corresponding to a String
@@ -169,6 +187,33 @@ public class Decrypt {
 			for (int m = frequencieIndex, englishFrequencieIndex = 0; englishFrequencieIndex < ENGLISHFREQUENCIES.length; m++, ++englishFrequencieIndex) {
 				m = m % 256;
 				produitScalaire += charFrequencies[m] * ENGLISHFREQUENCIES[englishFrequencieIndex];
+			}
+			if (produitScalaire > produitScalaireMaximal) {
+				produitScalaireMaximal = produitScalaire;
+				indiceProduitScalaireMaximal = frequencieIndex;
+			}
+		}
+
+		return (byte) (indiceProduitScalaireMaximal - APOSITION);
+	}
+
+
+	/**
+	 * Method that finds the key used by a  Caesar encoding from an array of character frequencies for a particular language
+	 * @param charFrequencies the array of character frequencies
+	 * @param languageFrequencies the frequencies of letters for a particular language
+	 * @return the key
+	 */
+	public static byte caesarFindKey(float[] charFrequencies, double[] languageFrequencies) {
+
+		float produitScalaireMaximal = 0;
+		int indiceProduitScalaireMaximal = 0;
+
+		for (int frequencieIndex = 0; frequencieIndex < ALPHABETSIZE; ++frequencieIndex) {
+			float produitScalaire = 0;
+			for (int m = frequencieIndex, languageFrequencyIndex = 0; languageFrequencyIndex < languageFrequencies.length; m++, ++languageFrequencyIndex) {
+				m = m % 256;
+				produitScalaire += charFrequencies[m] * languageFrequencies[languageFrequencyIndex];
 			}
 			if (produitScalaire > produitScalaireMaximal) {
 				produitScalaireMaximal = produitScalaire;
@@ -329,6 +374,32 @@ public class Decrypt {
 	}
 
 
+	/**
+	 * Takes the cipher without space, and the key length, and uses the dot product with the English language frequencies
+	 * to compute the shifting for each letter of the key
+	 * @param cipher the byte array representing the encoded text without space
+	 * @param keyLength the length of the key we want to find
+	 * @param frequencies the frequencies of letters for a particular language
+	 * @return the inverse key to decode the Vigenere cipher text
+	 */
+	public static byte[] vigenereFindKey(List<Byte> cipher, int keyLength, double[] frequencies) {
+
+		byte[] key = new byte[keyLength];
+
+		for (int i = 0; i < keyLength; i++) {
+			byte[] cipherChar = new byte[(int) Math.ceil(cipher.size() / keyLength) + 1];
+
+			for (int charIndex = i, j = 0; charIndex < cipher.size(); charIndex += keyLength, j++) {
+				cipherChar[j] = cipher.get(charIndex);
+			}
+
+			key[i] = caesarWithFrequencies(cipherChar, frequencies);
+		}
+
+		return key;
+	}
+
+
 
 	/**
 	 * Compare the cipher text with a shifted version of itself and compute how many letters coincide
@@ -414,7 +485,93 @@ public class Decrypt {
 		return spaceIndex;
 
 	}
-	
+
+
+	//---------------BONUS : Advanced Vigenere----------------- //TODO!!!
+
+
+	public static byte[] advancedVigenere(byte[] cipher){
+		HashMap<String, HashSet<String>> Dictionaries = setDictionaries();
+
+		byte[] decrypted = new byte[cipher.length];
+		int max = 0, index = 0;
+
+		for (String language : Dictionaries.keySet()){
+			HashSet<String> currLanguage = Dictionaries.get(language);
+			String currDecrypt = breakForLanguage(cipher, currLanguage, LANGUAGEFREQUENCIES[index]);
+			int currCount = countWords(currDecrypt, currLanguage);
+			if (currCount > max){
+				max = currCount;
+				decrypted = stringToBytes(currDecrypt);
+			}
+			++index;
+		}
+
+		return decrypted;
+	}
+
+
+	/**
+	 * Method used to initialize the dictionaries in French, English, Italian, German and Spanish
+	 * @return the HashMap containing all the Dictionaries
+	 */
+	public static HashMap<String, HashSet<String>> setDictionaries(){
+		HashMap<String, HashSet<String>> Dictionaries = new HashMap<String, HashSet<String>>();
+
+		for (String language : LANGUAGES ) {
+			String[] dictionaryLanguage = cleanString(readStringFromFile(language, "src\\Dictionaries")).split(" ");
+			HashSet<String> dict = new HashSet<>();
+
+			for (String words : dictionaryLanguage){
+				dict.add(words);
+			}
+
+			Dictionaries.put(language, dict);
+
+		}
+
+		return Dictionaries;
+	}
+
+
+	/**
+	 * Method used to count the number of correct words in a given String for a particular language
+	 * @param decryptedMessage the String to check
+	 * @param dictionary the HashSet containing a dictionary in a particular language
+	 * @return the number of words well decrypted.
+	 */
+	public static int countWords(String decryptedMessage, HashSet<String> dictionary){
+		String[] words = decryptedMessage.split(" ");
+		int validWords = 0;
+		for (String word: words){
+			if (dictionary.contains(word.toLowerCase())){
+				validWords++;
+			}
+		}
+		return validWords;
+	}
+
+
+	public static String breakForLanguage(byte[] cipher, HashSet<String> dictionary, double[] frequencies){
+		String decryptedString = "";
+		int keyLength = 0;
+		int mostCorrectWord = 0;
+		for (int i=1; i<101; i++){
+			byte[] key = vigenereFindKey(removeSpaces(cipher), i, frequencies);
+			String decryptedMessage = bytesToString(vigenereWithKey(cipher, key));
+			int validWords = countWords(decryptedMessage, dictionary);
+			if (validWords > mostCorrectWord){
+				mostCorrectWord = validWords;
+				decryptedString = decryptedMessage;
+				keyLength = key.length;
+			}
+		}
+
+		return decryptedString;
+	}
+
+
+
 	
 	//-----------------------Basic CBC-------------------------
 	

@@ -13,7 +13,6 @@ public class Main {
 	//---------------------------MAIN---------------------------
 	public static void main(String args[]) {
 
-
 		String inputMessage = Helper.readStringFromFile("text_one.txt");
 		String key = "2cF%5";
 
@@ -35,8 +34,8 @@ public class Main {
 
 		System.out.println("------Xor------");
 		testXor(messageBytes, key2);*/
-		System.out.println("------Vigenere------");
-		testVigenere(messageBytes, keyBytes);
+		/*System.out.println("------Vigenere------");
+		testVigenere(messageBytes, keyBytes);*/
 		//System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(Helper.stringToBytes("cqqog mpwuoëh"))));
 
 		/*System.out.println("------PAD------");
@@ -53,8 +52,7 @@ public class Main {
 		System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
 */
 
-
-
+		System.out.println(bytesToString(Decrypt.advancedVigenere(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
 		// TODO: TO BE COMPLETED
 
 
