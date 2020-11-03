@@ -1,6 +1,6 @@
 package crypto;
+
 import java.util.Scanner;
-import java.util.Arrays;
 
 public class UI {
 
@@ -118,11 +118,10 @@ public class UI {
 	public static boolean inList(int[] intList, int searchedValue)
 	{
 		boolean inList = false;
-		for(int listIndex = 0; listIndex < intList.length; ++listIndex)
-		{
-			if(intList[listIndex] == searchedValue)
-			{
+		for (int i : intList) {
+			if (i == searchedValue) {
 				inList = true;
+				break;
 			}
 		}
 		

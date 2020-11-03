@@ -34,10 +34,9 @@ public class Main {
 		byte key2 = (byte)50;
 
 		System.out.println("------Xor------");
-		testXor(messageBytes, key2);
-*/
-		/*System.out.println("------Vigenere------");
-		testVigenere(messageBytes, keyBytes);*/
+		testXor(messageBytes, key2);*/
+		System.out.println("------Vigenere------");
+		testVigenere(messageBytes, keyBytes);
 		//System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(Helper.stringToBytes("cqqog mpwuoëh"))));
 
 		/*System.out.println("------PAD------");
@@ -46,9 +45,13 @@ public class Main {
 		System.out.println("------OTP------");
 		testOTP(messageBytes);*/
 
-		System.out.println("------CBC------");
-		testCBC(messageBytes);
+		/*System.out.println("------CBC------");
+		testCBC(messageBytes);*/
 
+		/*System.out.println(Decrypt.caesarWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt"))));
+		System.out.println(bytesToString(Encrypt.caesar(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")), (byte)-107)));
+		System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
+*/
 
 
 
@@ -109,10 +112,10 @@ public class Main {
 		//Encoding
 		byte[] result = Encrypt.vigenere(string, key);
 		String s = bytesToString(result);
-		/*System.out.println("Encoded : " + s);
+		System.out.println("Encoded : " + s);
 		System.out.println("Exemple du diapo :");
 		System.out.println(Helper.bytesToString(Encrypt.vigenere(Helper.stringToBytes("bonne journée"), new byte[]{(byte) 1, (byte) 2, (byte) 3}, false)));
-
+		/*
 		//Decoding with key
 		String sD = bytesToString(Encrypt.vigenere(result, stringToBytes("Î\u009DºÛË")));
 		System.out.println("Decoded knowing the key : " + sD);*/
@@ -121,7 +124,7 @@ public class Main {
 		System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(result)));
 		System.out.println(bytesToString(Decrypt.vigenereFindKey(Decrypt.removeSpaces(result), Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(result)))));
 		System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(result)));
-		//System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
+
 
 		/*//Decoding without key
 		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
@@ -159,7 +162,7 @@ public class Main {
 	//Run the Encoding and Decoding using the CBC pattern
 	public static void testCBC(byte[] string) {
 		//Encoding
-		byte[] padTest = {-15, 92, 6}; //Encrypt.generatePad(5);
+		byte[] padTest = {49, 50, 51}; //Encrypt.generatePad(5);
 		byte[] result = Encrypt.cbc(string, padTest);
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);

@@ -4,9 +4,7 @@ import static crypto.Helper.bytesToString;
 import static crypto.Helper.stringToBytes;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Decrypt {
 	
@@ -27,6 +25,18 @@ public class Decrypt {
 		
 		return null; //TODO: to be modified
 	}
+
+	public static String breakCipher(String cipher, int type, byte key) {
+		//TODO : COMPLETE THIS METHOD
+
+		return null; //TODO: to be modified
+	}
+
+	public static String breakCipher(String cipher, int type, byte[] key) {
+		//TODO : COMPLETE THIS METHOD
+
+		return null; //TODO: to be modified
+	}
 	
 	
 	/**
@@ -37,13 +47,13 @@ public class Decrypt {
 		String bruteForceStringResult = "";
 
 		for (int keyNumber = 0; keyNumber < bruteForceResult.length; ++keyNumber) {
-			byte decodedBytes[] = new byte[bruteForceResult[0].length]; //Taille du tableau des bytes encodés
+			byte[] decodedBytes = new byte[bruteForceResult[0].length]; //Taille du tableau des bytes encodés
 			for (int byteIndex = 0; byteIndex < bruteForceResult[0].length; ++byteIndex) {
 				decodedBytes[byteIndex] = bruteForceResult[keyNumber][byteIndex];
 			}
 			String byteTableString = Helper.bytesToString(decodedBytes); //Associe le i ème tableau de bytes à ses Strings
 
-			bruteForceStringResult += " - - - - - /!\\ TRY N°" + (int) (keyNumber + 1) + "/!\\ - - - - - " + System.lineSeparator() + byteTableString + System.lineSeparator(); //Ajoute l'équivalene en String du i ème tableau au texte final qui sera affiché
+			bruteForceStringResult += " - - - - - /!\\ TRY N°" + (keyNumber + 1) + "/!\\ - - - - - " + System.lineSeparator() + byteTableString + System.lineSeparator(); //Ajoute l'équivalene en String du i ème tableau au texte final qui sera affiché
 
 		}
 		return bruteForceStringResult;
@@ -51,7 +61,27 @@ public class Decrypt {
 	
 	
 	//-----------------------Caesar-------------------------
-	
+
+	/**
+	 *  Method to decode a byte array encoded using the Caesar scheme knowing the key
+	 * This is done by applying the inverse Caesar method in Encrypt to the key and the cipher
+	 * @param cipher the byte array representing the encoded text
+	 * @param key the key encoding the cipher
+	 * @return the decoded string.
+	 */
+	public static byte[] caesarWithKey(byte[] cipher, byte key) {
+		byte[] decodedCaesar = new byte[cipher.length];
+		for (int encodedByteIndex = 0; encodedByteIndex < cipher.length; ++encodedByteIndex) {
+			if (cipher[encodedByteIndex] != Encrypt.SPACE) {
+				decodedCaesar[encodedByteIndex] = (byte) (cipher[encodedByteIndex] - key);
+			} else {
+				decodedCaesar[encodedByteIndex] = cipher[encodedByteIndex];
+			}
+		}
+		return decodedCaesar;
+	}
+
+
 	/**
 	 *  Method to decode a byte array  encoded using the Caesar scheme
 	 * This is done by the brute force generation of all the possible options
@@ -65,7 +95,7 @@ public class Decrypt {
 				if (cipher[encodedByteIndex] != Encrypt.SPACE) {
 					decodedPossibilities[keyTry + 128][encodedByteIndex] = (byte) (cipher[encodedByteIndex] - keyTry);
 				} else {
-					decodedPossibilities[keyTry + 128][encodedByteIndex] = (byte) (cipher[encodedByteIndex]);
+					decodedPossibilities[keyTry + 128][encodedByteIndex] = cipher[encodedByteIndex];
 				}
 			}
 		}
@@ -80,8 +110,7 @@ public class Decrypt {
 	 */
 	public static byte caesarWithFrequencies(byte[] cipherText) {
 		float[] frequencies = computeFrequencies(cipherText);
-		byte deducedKey = caesarFindKey(frequencies);
-		return deducedKey;
+		return caesarFindKey(frequencies);
 	}
 	
 	/**
@@ -94,14 +123,13 @@ public class Decrypt {
 		float[] cardinal = new float[ALPHABETSIZE];
 		float[] frequencies = new float[ALPHABETSIZE];
 		int spaceNumber = 0;
-		
-		for(int iterator0 = 0; iterator0 < cipherText.length; ++iterator0) //Comptage du nombre d'espaces
-		{
-			if(cipherText[iterator0] == Encrypt.SPACE)
-			{
+
+		//Comptage du nombre d'espaces
+		for (byte b : cipherText) {
+			if (b == Encrypt.SPACE) {
 				spaceNumber += 1;
 			}
-			
+
 		}
 		
 		float totalBytesNumber = cipherText.length - spaceNumber; //On ne compte plus les espaces dans le nombre total
@@ -110,12 +138,9 @@ public class Decrypt {
 		{
 			cardinal[iterator] = 0;
 		}
-		
-		for(int byteIndex = 0; byteIndex < cipherText.length; ++byteIndex)
-		{
-			byte iteratedByte = cipherText[byteIndex];
-			if (iteratedByte != Encrypt.SPACE)
-			{
+
+		for (byte iteratedByte : cipherText) {
+			if (iteratedByte != Encrypt.SPACE) {
 				int validIteratedByte = iteratedByte + 128;
 				cardinal[validIteratedByte] += 1;
 			}
@@ -151,15 +176,25 @@ public class Decrypt {
 			}
 		}
 
-		byte key = (byte) (indiceProduitScalaireMaximal - APOSITION);
-
-		return key;
+		return (byte) (indiceProduitScalaireMaximal - APOSITION);
 	}
 	
 	
 	
 	//-----------------------XOR-------------------------
-	
+
+	/**
+	 * Method to decode a byte array encoded using a XOR knowing the key
+	 * This is done by applying the XOR method in Encrypt to the key and the cipher
+	 * @param cipher the byte array representing the encoded text
+	 * @param key the key encoding the cipher
+	 * @return the decoded string.
+	 */
+	public static byte[] xorWithKey(byte[] cipher, byte key) {
+		return Encrypt.xor(cipher, key, false);
+	}
+
+
 	/**
 	 * Method to decode a byte array encoded using a XOR 
 	 * This is done by the brute force generation of all the possible options
@@ -180,32 +215,45 @@ public class Decrypt {
 	
 	
 	//-----------------------Vigenere-------------------------
-	// Algorithm : see  https://www.youtube.com/watch?v=LaWp_Kq0cKs	
-	/**
-	 * Method to decode a byte array encoded following the Vigenere pattern, but in a clever way, 
-	 * saving up on large amounts of computations
-	 * @param cipher the byte array representing the encoded text
-	 * @return the byte encoding of the clear text
-	 */
-	public static byte[] vigenereWithFrequencies(byte[] cipher) {
 
+	/**
+	 * Method to decode a byte array encoded using a Vigenere method knowing the key
+	 * This is done by applying the inverse of the Vigenere method in Encrypt to the key and the cipher
+	 * @param cipher the byte array representing the encoded text
+	 * @param key the key encoding the cipher
+	 * @return the decoded string.
+	 */
+	public static byte[] vigenereWithKey(byte[] cipher, byte[] key) {
 		List<Byte> cipherByteWithoutSpace = removeSpaces(cipher);
-		byte[] cipherKey = vigenereFindKey(cipherByteWithoutSpace, vigenereFindKeyLength(cipherByteWithoutSpace));
 		ArrayList<Integer> spacesIndex = spacesMemorize(cipher);
 		byte[] decodedCipher = new byte[cipher.length];
 		int spaceShift = 0;
 
 		for (int i = 0; i < decodedCipher.length; i++) {
-			if (spacesIndex.indexOf(i) != -1) {
+			if (spacesIndex.contains(i)) {
 				decodedCipher[i] = Encrypt.SPACE;
 				++spaceShift;
 			} else {
-				decodedCipher[i] = (byte) (cipherByteWithoutSpace.get(i-spaceShift) - cipherKey[(i-spaceShift) % cipherKey.length]);
+				decodedCipher[i] = (byte) (cipherByteWithoutSpace.get(i - spaceShift) - key[(i - spaceShift) % key.length]);
 			}
 		}
 
 		return decodedCipher;
+	}
 
+
+	// Algorithm : see  https://www.youtube.com/watch?v=LaWp_Kq0cKs
+	/**
+	 * Method to decode a byte array encoded following the Vigenere pattern, but in a clever way, 
+	 * saving up on large amounts of computations
+	 * @param cipher the byte array representing the encoded text
+	 * @return the byte encoding the clear text
+	 */
+	public static byte[] vigenereWithFrequencies(byte[] cipher) {
+
+		List<Byte> cipherByteWithoutSpace = removeSpaces(cipher);
+
+		return vigenereFindKey(cipherByteWithoutSpace, vigenereFindKeyLength(cipherByteWithoutSpace));
 	}
 	
 	
@@ -217,11 +265,11 @@ public class Decrypt {
 	 */
 	public static List<Byte> removeSpaces(byte[] array) {
 
-		List<Byte> sanitizedCipher = new ArrayList<Byte>();
+		List<Byte> sanitizedCipher = new ArrayList<>();
 
-		for (int i = 0; i < array.length; i++) {
-			if (array[i] != Encrypt.SPACE) {
-				sanitizedCipher.add(array[i]);
+		for (byte b : array) {
+			if (b != Encrypt.SPACE) {
+				sanitizedCipher.add(b);
 			}
 		}
 
@@ -269,10 +317,9 @@ public class Decrypt {
 
 		for (int i = 0; i < keyLength; i++) {
 			byte[] cipherChar = new byte[(int) Math.ceil(cipher.size() / keyLength) + 1];
-			int j = 0;
-			for (int charIndex = i; charIndex < cipher.size(); charIndex += keyLength) {
+
+			for (int charIndex = i, j = 0; charIndex < cipher.size(); charIndex += keyLength, j++) {
 				cipherChar[j] = cipher.get(charIndex);
-				j++;
 			}
 
 			key[i] = caesarWithFrequencies(cipherChar);
@@ -290,7 +337,7 @@ public class Decrypt {
 	 */
 	public static List<Integer> characterCoincidence(List<Byte> cipher) {
 
-		List<Integer> coincidences = new ArrayList<Integer>();
+		List<Integer> coincidences = new ArrayList<>();
 
 		for (int shift = 1; shift < cipher.size(); shift++) {
 			int coincidence = 0;//-15;
@@ -314,7 +361,7 @@ public class Decrypt {
 	 */
 	public static ArrayList<Integer> localMaximaIndex(List<Integer> coincidenceList) {
 
-		ArrayList<Integer> localMaxima = new ArrayList<Integer>();
+		ArrayList<Integer> localMaxima = new ArrayList<>();
 
 		for (int i = 0; i <= Math.ceil(coincidenceList.size() / 2); i++) {
 			int n = coincidenceList.get(i);
@@ -354,7 +401,7 @@ public class Decrypt {
 	 */
 	public static ArrayList<Integer> spacesMemorize(byte[] array) {
 
-		ArrayList<Integer> spaceIndex = new ArrayList<Integer>();
+		ArrayList<Integer> spaceIndex = new ArrayList<>();
 		int index = 0;
 
 		for (byte character : array) {
