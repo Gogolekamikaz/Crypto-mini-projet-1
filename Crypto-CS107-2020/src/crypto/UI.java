@@ -81,11 +81,19 @@ public class UI {
 				}
 
 				}
+			int continuerProgramme = askChoice("Souhaitez-vous :\n[1] Chiffrer ou Déchiffrer un autre texte\n[2] Arrêter le programme", acceptedNumber);
+			if(continuerProgramme == 1)
+			{
+				continue;
 			}
-			
-			
-			keepGoing = false;
+			else if(continuerProgramme == 2) {	
+				keepGoing = false;
+			}
 		}
+			
+			
+			
+	}
 	
 	public static void clearConsole() {
 	    //System.out.print("\033[H\033[2J");   
