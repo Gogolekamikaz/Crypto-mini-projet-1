@@ -1,4 +1,4 @@
-#Crypto-mini-projet-1
+# Crypto-mini-projet-1
 
 Bonjour, nous créons ce fichier pour vous informer des bonus que nous avons choisi d'effectuer, dans le cadre du mini projet, ainsi que sa notice d'utilisation.
 
