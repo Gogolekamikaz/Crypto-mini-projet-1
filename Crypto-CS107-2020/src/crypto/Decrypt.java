@@ -155,7 +155,7 @@ public class Decrypt {
 		return decodedCipher;
 	}
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -	
-//Fin des BONUS pour la fin Decrypt
+//Fin des BONUS pour la fonction Decrypt
 	
 	/**
 	 * Converts a 2D byte array to a String
