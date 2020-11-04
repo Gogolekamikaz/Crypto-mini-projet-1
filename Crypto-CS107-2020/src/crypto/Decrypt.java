@@ -26,7 +26,44 @@ public class Decrypt {
 	 * @param type the integer representing the method to break : 0 = Caesar, 1 = Vigenere, 2 = XOR
 	 * @return the decoded string or the original encoded message if type is not in the list above.
 	 */
+	
 	public static String breakCipher(String cipher, int type) {
+		
+		byte[] cipherBytes = Helper.stringToBytes(cipher);
+		
+		if(type == CAESAR)
+		{
+			byte decodingKey = Decrypt.caesarWithFrequencies(cipherBytes);
+			decodingKey =(byte)(-decodingKey);
+			String decodedString = bytesToString(Encrypt.caesar(cipherBytes, decodingKey));
+			return decodedString;
+		}
+		else if(type == VIGENERE)
+		{
+			String decodedString = bytesToString(Decrypt.vigenereWithFrequencies(cipherBytes));
+			return decodedString;
+		}
+		else if(type == XOR)
+		{
+			byte[][] bruteForceResult = xorBruteForce(cipherBytes);
+			String possibilitiesStringXor = arrayToString(bruteForceResult);
+			return possibilitiesStringXor;
+		}
+		
+		else
+		{
+			return null;
+		}
+	}
+	
+// Debut des BONUS pour la fonction Decrypt	
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -	
+// /!\ BONUS : Fonction Break Cipher avec des méthodes plus avancées /!\
+//Depuis le resultat du bruteforce caesar, la fonction trouve directement quelle ligne et mot décodé est le bon grâce à la reconnaissance de mots du dictionnaire de différentes langues
+//Utilise une méthode similaire pour Vigenere afin de pouvoir décoder des mots chiffrés avec une clé de grande taille.
+// Même idée pour XOR.
+	
+	public static String BONUSbreakCipherBONUS(String cipher, int type) {
 		String decodedCipher = "";
 		HashMap<String, HashSet<String>> Dictionaries = setDictionaries();
 		int max = 0;
@@ -71,8 +108,10 @@ public class Decrypt {
 
 		return decodedCipher;
 	}
-
-
+	
+	
+// /!\ BONUS : Déchiffrement simple lorsque l'utilisateur connait la clé avec laquelle le mot a été initialement chiffré /!\ 
+	
 	/**
 	 * Method to break a string encoded with different types of cryptosystems with a one-char key
 	 * @param type the integer representing the method to break : 0 = Caesar, 1 = Vigenere, 2 = XOR
@@ -94,7 +133,7 @@ public class Decrypt {
 		return decodedCipher;
 	}
 
-
+// BONUS 
 	/**
 	 * Method to break a string encoded with different types of cryptosystems with a multi-char key
 	 * @param type the integer representing the method to break : 1 = Vigenere, 3 = OTP, 4 = CBC
@@ -115,7 +154,8 @@ public class Decrypt {
 
 		return decodedCipher;
 	}
-	
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -	
+//Fin des BONUS pour la fin Decrypt
 	
 	/**
 	 * Converts a 2D byte array to a String
