@@ -2,7 +2,7 @@
 
 Bonjour, nous créons ce fichier pour vous informer des bonus que nous avons choisi d'effectuer, dans le cadre du mini projet, ainsi que sa notice d'utilisation.
 
-#                                                                      CHANGEMENTS
+##                                                                      CHANGEMENTS
 
                                                    | Interface Utilisateur en console : fichier UI.java | 
 
@@ -22,4 +22,4 @@ D'autres changements personnels ont été fait dans les différents fichiers du 
     * Helper.java - Ajout d'une méthode de lecture des fichiers dictionnaires (celle permettant de préciser le chemin d'accès)
     * Encrypt.java et Decrypt.java - Ajout de méthodes de surcharge pour traiter tous les cas, changement des imports...
 
-#                                                                       NOTICE
+##                                                                       NOTICE
