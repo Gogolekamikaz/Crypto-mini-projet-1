@@ -52,7 +52,6 @@ public class Main {
 		System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
 */
 
-		System.out.println(bytesToString(Decrypt.advancedVigenere(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
 		// TODO: TO BE COMPLETED
 
 

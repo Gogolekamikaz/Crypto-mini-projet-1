@@ -14,6 +14,7 @@ public class Helper {
 	private static final String SEP = File.separator;
 	private static final String RES_PATH_HEADER = "res" + SEP;
 
+
 	/**
 	 * Method to clean a string, only keeping lower case letters, and spaces.
 	 * @param s the string to clean	
@@ -47,7 +48,8 @@ public class Helper {
 	public static String bytesToString(byte[] numbers) {
 		return new String(numbers, StandardCharsets.ISO_8859_1);
 	}
-	
+
+
 	/**
 	 * Write a String to a file, clears the file each time it is called
 	 * @param text the string to write
@@ -56,7 +58,8 @@ public class Helper {
 	public static void writeStringToFile(String text, String name) {
 		writeStringToFile(text, name, false);
 	}
-	
+
+
 	/**
 	 * Method to write Strings to a File, we can choose between appending or not at the end of file.
 	 * @param text the array of string lines we want to write
@@ -112,6 +115,7 @@ public class Helper {
 		  return string;
 		  
 	}
+
 
 	/**
 	 * Method to read a file into a string

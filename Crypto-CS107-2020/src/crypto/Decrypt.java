@@ -1,11 +1,9 @@
 package crypto;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static crypto.Helper.*;
+import static crypto.Encrypt.*;
 
 public class Decrypt {
 	
@@ -21,28 +19,101 @@ public class Decrypt {
 														  {0.06516,0.01886,0.02732,0.05076,0.16396,0.01656,0.03009,0.04577,0.06550,0.00268,0.01417,0.03437,0.02534,0.09776,0.02594,0.00670,0.00018,0.07003,0.07270,0.06154,0.04166,0.00846,0.01921,0.00034,0.00039,0.01134},
 														  {0.11745,0.00927,0.04501,0.03736,0.11792,0.01153,0.01644,0.00636,0.10143,0.00011,0.00009,0.06510,0.02994,0.06883,0.09832,0.03056,0.00505,0.06367,0.04981,0.05623,0.03011,0.02097,0.00033,0.00003,0.00020,0.01181},
 														  {0.11525,0.02215,0.04019,0.05010,0.12181,0.00692,0.01768,0.00703,0.06247,0.00493,0.00011,0.04967,0.03157,0.06712,0.08683,0.02510,0.00877,0.06871,0.07977,0.04632,0.02927,0.01138,0.00017,0.00215,0.01008,0.00467}};
-	
+
+
 	/**
-	 * Method to break a string encoded with different types of cryptosystems
+	 * Method to break a string encoded with different types of cryptosystems by analysis (without the key)
 	 * @param type the integer representing the method to break : 0 = Caesar, 1 = Vigenere, 2 = XOR
 	 * @return the decoded string or the original encoded message if type is not in the list above.
 	 */
 	public static String breakCipher(String cipher, int type) {
-		//TODO : COMPLETE THIS METHOD
-		
-		return null; //TODO: to be modified
+		String decodedCipher = "";
+		HashMap<String, HashSet<String>> Dictionaries = setDictionaries();
+		int max = 0;
+
+		switch (type) {
+			case CAESAR -> {
+				byte[][] BruteForce = caesarBruteForce(stringToBytes(cipher));
+				for (String language : LANGUAGES) {
+					for (byte[] decode : BruteForce) {
+						int currCount = countWords(bytesToString(decode), Dictionaries.get(language));
+						if (currCount > max) {
+							if ((100 * currCount) / cipher.length() > 70) {
+								break;
+							}
+							max = currCount;
+							decodedCipher = bytesToString(decode);
+						}
+					}
+				}
+			}
+			case VIGENERE -> decodedCipher = bytesToString(advancedVigenere(stringToBytes(cipher)));
+			case XOR -> {
+				byte[][] BruteForce2 = xorBruteForce(stringToBytes(cipher));
+				for (String language : LANGUAGES) {
+					for (byte[] decode : BruteForce2) {
+						int currCount = countWords(bytesToString(decode), Dictionaries.get(language));
+						if (currCount > max) {
+							if ((100 * currCount) / cipher.length() > 70) {
+								break;
+							}
+							max = currCount;
+							decodedCipher = bytesToString(decode);
+						}
+					}
+				}
+			}
+			default -> {
+				System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide!");
+				decodedCipher = cipher;
+			}
+		}
+
+		return decodedCipher;
 	}
 
+
+	/**
+	 * Method to break a string encoded with different types of cryptosystems with a one-char key
+	 * @param type the integer representing the method to break : 0 = Caesar, 1 = Vigenere, 2 = XOR
+	 * @return the decoded string or the original encoded message if type is not in the list above.
+	 */
 	public static String breakCipher(String cipher, int type, byte key) {
-		//TODO : COMPLETE THIS METHOD
+		String decodedCipher;
 
-		return null; //TODO: to be modified
+		switch (type) {
+			case CAESAR -> decodedCipher = bytesToString(caesarWithKey(stringToBytes(cipher), key));
+			case VIGENERE -> decodedCipher = bytesToString(vigenereWithKey(stringToBytes(cipher), new byte[]{key}));
+			case XOR -> decodedCipher = bytesToString(xorWithKey(stringToBytes(cipher), key));
+			default -> {
+				decodedCipher = cipher;
+				System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide!");
+			}
+		}
+
+		return decodedCipher;
 	}
 
-	public static String breakCipher(String cipher, int type, byte[] key) {
-		//TODO : COMPLETE THIS METHOD
 
-		return null; //TODO: to be modified
+	/**
+	 * Method to break a string encoded with different types of cryptosystems with a multi-char key
+	 * @param type the integer representing the method to break : 1 = Vigenere, 3 = OTP, 4 = CBC
+	 * @return the decoded string or the original encoded message if type is not in the list above.
+	 */
+	public static String breakCipher(String cipher, int type, byte[] key) {
+		String decodedCipher;
+
+		switch (type) {
+			case CBC -> decodedCipher = bytesToString(decryptCBC(stringToBytes(cipher), key));
+			case ONETIME -> decodedCipher = bytesToString(oneTimePad(stringToBytes(cipher), key));
+			case VIGENERE -> decodedCipher = bytesToString(vigenereWithKey(stringToBytes(cipher), key));
+			default -> {
+				decodedCipher = cipher;
+				System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide correspondant à la clé!");
+			}
+		}
+
+		return decodedCipher;
 	}
 	
 	
@@ -79,7 +150,7 @@ public class Decrypt {
 	public static byte[] caesarWithKey(byte[] cipher, byte key) {
 		byte[] decodedCaesar = new byte[cipher.length];
 		for (int encodedByteIndex = 0; encodedByteIndex < cipher.length; ++encodedByteIndex) {
-			if (cipher[encodedByteIndex] != Encrypt.SPACE) {
+			if (cipher[encodedByteIndex] != SPACE) {
 				decodedCaesar[encodedByteIndex] = (byte) (cipher[encodedByteIndex] - key);
 			} else {
 				decodedCaesar[encodedByteIndex] = cipher[encodedByteIndex];
@@ -99,7 +170,7 @@ public class Decrypt {
 		byte[][] decodedPossibilities = new byte[256][cipher.length];
 		for (int keyTry = -128; keyTry < 128; ++keyTry) {
 			for (int encodedByteIndex = 0; encodedByteIndex < cipher.length; ++encodedByteIndex) {
-				if (cipher[encodedByteIndex] != Encrypt.SPACE) {
+				if (cipher[encodedByteIndex] != SPACE) {
 					decodedPossibilities[keyTry + 128][encodedByteIndex] = (byte) (cipher[encodedByteIndex] - keyTry);
 				} else {
 					decodedPossibilities[keyTry + 128][encodedByteIndex] = cipher[encodedByteIndex];
@@ -144,7 +215,7 @@ public class Decrypt {
 
 		//Comptage du nombre d'espaces
 		for (byte b : cipherText) {
-			if (b == Encrypt.SPACE) {
+			if (b == SPACE) {
 				spaceNumber += 1;
 			}
 
@@ -158,7 +229,7 @@ public class Decrypt {
 		}
 
 		for (byte iteratedByte : cipherText) {
-			if (iteratedByte != Encrypt.SPACE) {
+			if (iteratedByte != SPACE) {
 				int validIteratedByte = iteratedByte + 128;
 				cardinal[validIteratedByte] += 1;
 			}
@@ -236,7 +307,7 @@ public class Decrypt {
 	 * @return the decoded string.
 	 */
 	public static byte[] xorWithKey(byte[] cipher, byte key) {
-		return Encrypt.xor(cipher, key, false);
+		return xor(cipher, key, false);
 	}
 
 
@@ -251,7 +322,7 @@ public class Decrypt {
 		byte[][] results = new byte[ALPHABETSIZE][cipher.length];
 
 		for (int i = 0; i < results.length; i++) {
-			results[i] = Encrypt.xor(cipher, (byte) i);
+			results[i] = xor(cipher, (byte) i);
 		}
 
 		return results;
@@ -276,7 +347,7 @@ public class Decrypt {
 
 		for (int i = 0; i < decodedCipher.length; i++) {
 			if (spacesIndex.contains(i)) {
-				decodedCipher[i] = Encrypt.SPACE;
+				decodedCipher[i] = SPACE;
 				++spaceShift;
 			} else {
 				decodedCipher[i] = (byte) (cipherByteWithoutSpace.get(i - spaceShift) - key[(i - spaceShift) % key.length]);
@@ -313,7 +384,7 @@ public class Decrypt {
 		List<Byte> sanitizedCipher = new ArrayList<>();
 
 		for (byte b : array) {
-			if (b != Encrypt.SPACE) {
+			if (b != SPACE) {
 				sanitizedCipher.add(b);
 			}
 		}
@@ -476,7 +547,7 @@ public class Decrypt {
 		int index = 0;
 
 		for (byte character : array) {
-			if (character == Encrypt.SPACE) {
+			if (character == SPACE) {
 				spaceIndex.add(index);
 			}
 			index++;
@@ -487,9 +558,14 @@ public class Decrypt {
 	}
 
 
-	//---------------BONUS : Advanced Vigenere----------------- //TODO!!!
+	//---------------BONUS : Advanced Vigenere-----------------
 
-
+	/**
+	 * Method to decode a byte array encoded using a Vigenere method without knowing the key
+	 * This is done by searching for the right key in different language, up to a key length of 100
+	 * @param cipher the byte array representing the encoded text
+	 * @return the decoded byte.
+	 */
 	public static byte[] advancedVigenere(byte[] cipher){
 		HashMap<String, HashSet<String>> Dictionaries = setDictionaries();
 
@@ -501,6 +577,9 @@ public class Decrypt {
 			String currDecrypt = breakForLanguage(cipher, currLanguage, LANGUAGEFREQUENCIES[index]);
 			int currCount = countWords(currDecrypt, currLanguage);
 			if (currCount > max){
+				if((100*currCount)/cipher.length > 70){
+					break;
+				}
 				max = currCount;
 				decrypted = stringToBytes(currDecrypt);
 			}
@@ -516,15 +595,13 @@ public class Decrypt {
 	 * @return the HashMap containing all the Dictionaries
 	 */
 	public static HashMap<String, HashSet<String>> setDictionaries(){
-		HashMap<String, HashSet<String>> Dictionaries = new HashMap<String, HashSet<String>>();
+		HashMap<String, HashSet<String>> Dictionaries = new HashMap<>();
 
 		for (String language : LANGUAGES ) {
 			String[] dictionaryLanguage = cleanString(readStringFromFile(language, "src\\Dictionaries")).split(" ");
 			HashSet<String> dict = new HashSet<>();
 
-			for (String words : dictionaryLanguage){
-				dict.add(words);
-			}
+			Collections.addAll(dict, dictionaryLanguage);
 
 			Dictionaries.put(language, dict);
 
@@ -552,21 +629,28 @@ public class Decrypt {
 	}
 
 
+	/**
+	 * Method used to find the best result of decoded string obtained using a particular language
+	 * @param cipher the byte array representing the encoded text
+	 * @param dictionary the HashSet containing a dictionary in a particular language
+	 * @param frequencies the frequencies of letters for a particular language
+	 * @return the number of words well decrypted.
+	 */
 	public static String breakForLanguage(byte[] cipher, HashSet<String> dictionary, double[] frequencies){
 		String decryptedString = "";
-		int keyLength = 0;
 		int mostCorrectWord = 0;
-		for (int i=1; i<101; i++){
+		for (int i=1; i<100; i++){
 			byte[] key = vigenereFindKey(removeSpaces(cipher), i, frequencies);
 			String decryptedMessage = bytesToString(vigenereWithKey(cipher, key));
 			int validWords = countWords(decryptedMessage, dictionary);
 			if (validWords > mostCorrectWord){
+				if((100*validWords)/cipher.length > 70){
+					break;
+				}
 				mostCorrectWord = validWords;
 				decryptedString = decryptedMessage;
-				keyLength = key.length;
 			}
 		}
-
 		return decryptedString;
 	}
 

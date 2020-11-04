@@ -68,8 +68,7 @@ public class Encrypt {
 			case CBC:
 				byte[] bytePAD = stringToBytes(key);
 				byte[] encodedBytes = cbc(plainText , bytePAD);
-				String encodedString = bytesToString(encodedBytes);
-				return encodedString;
+				return bytesToString(encodedBytes);
 
 			default:
 				return null;
