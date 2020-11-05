@@ -18,7 +18,7 @@ Pour palier au manque de précision de l'algorithme de déchiffrement par fréqu
                                                                  | Autres Changements |
                                                                  
 D'autres changements personnels ont été fait dans les différents fichiers du projet dont :
-    * Helper.java - Ajout d'une méthode de lecture des fichiers dictionnaires (celle permettant de préciser le chemin d'accès)
+    * Decrypt.java - Ajout d'une méthode de lecture des fichiers dictionnaires (celle permettant de préciser le chemin d'accès)
     * Encrypt.java et Decrypt.java - Ajout de méthodes de surcharge pour traiter tous les cas, changement des imports...
 
 #                                                                       NOTICE

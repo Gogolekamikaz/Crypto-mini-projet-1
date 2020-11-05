@@ -1,5 +1,9 @@
 package crypto;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 import static crypto.Helper.*;
@@ -57,7 +61,6 @@ public class Decrypt {
 	}
 	
 // Debut des BONUS pour la fonction Decrypt	
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -	
 // /!\ BONUS : Fonction Break Cipher avec des méthodes plus avancées /!\
 //Depuis le resultat du bruteforce caesar, la fonction trouve directement quelle ligne et mot décodé est le bon grâce à la reconnaissance de mots du dictionnaire de différentes langues
 //Utilise une méthode similaire pour Vigenere afin de pouvoir décoder des mots chiffrés avec une clé de grande taille.
@@ -154,7 +157,6 @@ public class Decrypt {
 
 		return decodedCipher;
 	}
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -	
 //Fin des BONUS pour la fonction Decrypt
 	
 	/**
@@ -692,6 +694,39 @@ public class Decrypt {
 			}
 		}
 		return decryptedString;
+	}
+
+
+	/**
+	 * Method to read a file into a string
+	 * @param fileName the name of the file
+	 * @param folder the folder of the file in the project
+	 */
+	public static String readStringFromFile(String fileName, String folder) {
+		String string= "";
+		File file = new File(folder+File.separator+fileName);
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+
+			String temp;
+			boolean checkFirst = false;
+			while((temp = br.readLine())!= null) {
+				if(checkFirst) {
+					string += (" " + temp);
+				}else {
+					string += temp;
+					checkFirst = true;
+				}
+			}
+
+			br.close();
+
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return string;
+
 	}
 
 
