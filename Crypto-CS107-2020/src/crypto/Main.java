@@ -13,7 +13,7 @@ public class Main {
 	//---------------------------MAIN---------------------------
 	public static void main(String args[]) {
 
-		String inputMessage = Helper.readStringFromFile("text_one.txt");
+		String inputMessage = Helper.readStringFromFile("text_two.txt");
 		String key = "2cF%5";
 
 		String messageClean = cleanString(inputMessage);
@@ -26,26 +26,26 @@ public class Main {
 		System.out.println("Original input sanitized : " + messageClean);
 		System.out.println();
 		
-		/*System.out.println("------Caesar------");
-		testCaesar(messageBytes, keyBytes[0]);*/
+		System.out.println("------Caesar------");
+		testCaesar(messageBytes, keyBytes[0]);
 
-		/*
+		
 		byte key2 = (byte)50;
 
 		System.out.println("------Xor------");
-		testXor(messageBytes, key2);*/
+		testXor(messageBytes, key2);
 		System.out.println("------Vigenere------");
 		testVigenere(messageBytes, keyBytes);
 		//System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(Helper.stringToBytes("cqqog mpwuoëh"))));
 
-		/*System.out.println("------PAD------");
+		System.out.println("------PAD------");
 		System.out.println(bytesToString(Encrypt.generatePad(5)));
 
 		System.out.println("------OTP------");
-		testOTP(messageBytes);*/
+		testOTP(messageBytes);
 
-		/*System.out.println("------CBC------");
-		testCBC(messageBytes);*/
+		System.out.println("------CBC------");
+		testCBC(messageBytes);
 
 		/*System.out.println(Decrypt.caesarWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt"))));
 		System.out.println(bytesToString(Encrypt.caesar(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")), (byte)-107)));*/
@@ -54,7 +54,7 @@ public class Main {
 */
 		// TODO: TO BE COMPLETED
 
-		SignaturesCheck.check();
+		//SignaturesCheck.check();
 
 		//System.out.println(bytesToString(Encrypt.cbc(new byte[10], new byte[8])));
 

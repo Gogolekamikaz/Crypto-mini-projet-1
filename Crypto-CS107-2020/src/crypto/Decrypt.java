@@ -37,14 +37,13 @@ public class Decrypt {
 		
 		if(type == CAESAR)
 		{
-			byte decodingKey = Decrypt.caesarWithFrequencies(cipherBytes);
-			decodingKey =(byte)(-decodingKey);
-			String decodedString = bytesToString(Encrypt.caesar(cipherBytes, decodingKey));
+			byte decodingKey = caesarWithFrequencies(cipherBytes);
+			String decodedString = bytesToString(caesar(cipherBytes, decodingKey));
 			return decodedString;
 		}
 		else if(type == VIGENERE)
 		{
-			String decodedString = bytesToString(Decrypt.vigenereWithFrequencies(cipherBytes));
+			String decodedString = bytesToString(vigenereWithFrequencies(cipherBytes));
 			return decodedString;
 		}
 		else if(type == XOR)
@@ -71,24 +70,23 @@ public class Decrypt {
 		HashMap<String, HashSet<String>> Dictionaries = setDictionaries();
 		int max = 0;
 
-		switch (type) {
-			case CAESAR -> {
-				byte[][] BruteForce = caesarBruteForce(stringToBytes(cipher));
-				for (String language : LANGUAGES) {
-					for (byte[] decode : BruteForce) {
-						int currCount = countWords(bytesToString(decode), Dictionaries.get(language));
-						if (currCount > max) {
-							if ((100 * currCount) / cipher.length() > 70) {
-								break;
-							}
-							max = currCount;
-							decodedCipher = bytesToString(decode);
+		if (type == CAESAR) {
+			byte[][] BruteForce = caesarBruteForce(stringToBytes(cipher));
+			for (String language : LANGUAGES) {
+				for (byte[] decode : BruteForce) {
+					int currCount = countWords(bytesToString(decode), Dictionaries.get(language));
+					if (currCount > max) {
+						if ((100 * currCount) / cipher.length() > 70) {
+							break;
 						}
+						max = currCount;
+						decodedCipher = bytesToString(decode);
 					}
 				}
 			}
-			case VIGENERE -> decodedCipher = bytesToString(advancedVigenere(stringToBytes(cipher)));
-			case XOR -> {
+		}
+		else if (type == VIGENERE) decodedCipher = bytesToString(advancedVigenere(stringToBytes(cipher)));
+		else if (type == XOR) {
 				byte[][] BruteForce2 = xorBruteForce(stringToBytes(cipher));
 				for (String language : LANGUAGES) {
 					for (byte[] decode : BruteForce2) {
@@ -103,10 +101,9 @@ public class Decrypt {
 					}
 				}
 			}
-			default -> {
-				System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide!");
-				decodedCipher = cipher;
-			}
+		else {
+			System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide!");
+			decodedCipher = cipher;
 		}
 
 		return decodedCipher;
@@ -123,14 +120,13 @@ public class Decrypt {
 	public static String breakCipher(String cipher, int type, byte key) {
 		String decodedCipher;
 
-		switch (type) {
-			case CAESAR -> decodedCipher = bytesToString(caesarWithKey(stringToBytes(cipher), key));
-			case VIGENERE -> decodedCipher = bytesToString(vigenereWithKey(stringToBytes(cipher), new byte[]{key}));
-			case XOR -> decodedCipher = bytesToString(xorWithKey(stringToBytes(cipher), key));
-			default -> {
-				decodedCipher = cipher;
-				System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide!");
-			}
+
+		if (type == CAESAR) decodedCipher = bytesToString(caesarWithKey(stringToBytes(cipher), key));
+		else if (type == VIGENERE) decodedCipher = bytesToString(vigenereWithKey(stringToBytes(cipher), new byte[]{key}));
+		else if (type == XOR) decodedCipher = bytesToString(xorWithKey(stringToBytes(cipher), key));
+		else {
+			decodedCipher = cipher;
+			System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide!");
 		}
 
 		return decodedCipher;
@@ -145,14 +141,12 @@ public class Decrypt {
 	public static String breakCipher(String cipher, int type, byte[] key) {
 		String decodedCipher;
 
-		switch (type) {
-			case CBC -> decodedCipher = bytesToString(decryptCBC(stringToBytes(cipher), key));
-			case ONETIME -> decodedCipher = bytesToString(oneTimePad(stringToBytes(cipher), key));
-			case VIGENERE -> decodedCipher = bytesToString(vigenereWithKey(stringToBytes(cipher), key));
-			default -> {
-				decodedCipher = cipher;
-				System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide correspondant à la clé!");
-			}
+		if (type == CBC) decodedCipher = bytesToString(decryptCBC(stringToBytes(cipher), key));
+		else if (type == ONETIME) decodedCipher = bytesToString(oneTimePad(stringToBytes(cipher), key));
+		else if (type == VIGENERE) decodedCipher = bytesToString(vigenereWithKey(stringToBytes(cipher), key));
+		else {
+			decodedCipher = cipher;
+			System.out.println("Vous n'avez pas sélectionné une méthode de déchiffrement valide correspondant à la clé!");
 		}
 
 		return decodedCipher;
