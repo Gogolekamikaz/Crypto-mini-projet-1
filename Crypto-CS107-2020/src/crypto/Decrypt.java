@@ -38,7 +38,7 @@ public class Decrypt {
 		if(type == CAESAR)
 		{
 			byte decodingKey = caesarWithFrequencies(cipherBytes);
-			String decodedString = bytesToString(caesar(cipherBytes, decodingKey));
+			String decodedString = bytesToString(caesarWithKey(cipherBytes, decodingKey));
 			return decodedString;
 		}
 		else if(type == VIGENERE)
