@@ -23,19 +23,19 @@ public class Main {
 		byte[] keyBytes = stringToBytes(key);
 		
 		
-		/*System.out.println("Original input sanitized : " + messageClean);
+		System.out.println("Original input sanitized : " + messageClean);
 		System.out.println();
 		
-		System.out.println("------Caesar------");
-		testCaesar(messageBytes, keyBytes[0]);
+		/*System.out.println("------Caesar------");
+		testCaesar(messageBytes, keyBytes[0]);*/
 
-
+		/*
 		byte key2 = (byte)50;
 
 		System.out.println("------Xor------");
 		testXor(messageBytes, key2);*/
-		/*System.out.println("------Vigenere------");
-		testVigenere(messageBytes, keyBytes);*/
+		System.out.println("------Vigenere------");
+		testVigenere(messageBytes, keyBytes);
 		//System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(Helper.stringToBytes("cqqog mpwuoëh"))));
 
 		/*System.out.println("------PAD------");
@@ -48,14 +48,16 @@ public class Main {
 		testCBC(messageBytes);*/
 
 		/*System.out.println(Decrypt.caesarWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt"))));
-		System.out.println(bytesToString(Encrypt.caesar(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")), (byte)-107)));
-		System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
+		System.out.println(bytesToString(Encrypt.caesar(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")), (byte)-107)));*/
+		/*System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
+		System.out.println(bytesToString(Decrypt.vigenereWithKey(stringToBytes(readStringFromFile("challenge-encrypted.txt")), Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt"))))));
 */
-
 		// TODO: TO BE COMPLETED
 
+		SignaturesCheck.check();
 
-		
+		//System.out.println(bytesToString(Encrypt.cbc(new byte[10], new byte[8])));
+
 	}
 	
 	

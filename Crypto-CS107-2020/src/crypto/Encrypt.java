@@ -305,7 +305,7 @@ public class Encrypt {
 
 			//Vérifie si le texte est toalement chiffré, auquel cas, on s'arrête
 
-			if (encodedBytes[(encodedBytes.length) - 1] != 0) // Si la dernière valeur de la liste est différente de 0 (valeur par défault)
+			if (alreadyEncodedBytes > plainText.length)
 			{
 				encodedBytesListFullyCompleted = true;  // L'intégralité du message a été chiffré, on s'arrête comme promis.
 			}

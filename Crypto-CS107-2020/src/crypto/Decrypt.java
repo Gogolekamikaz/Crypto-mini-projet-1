@@ -62,7 +62,7 @@ public class Decrypt {
 	
 // Debut des BONUS pour la fonction Decrypt	
 // /!\ BONUS : Fonction Break Cipher avec des méthodes plus avancées /!\
-//Depuis le resultat du bruteforce caesar, la fonction trouve directement quelle ligne et mot décodé est le bon grâce à la reconnaissance de mots du dictionnaire de différentes langues
+//Depuis le résultat du bruteforce caesar, la fonction trouve directement quelle ligne et mot décodé est le bon grâce à la reconnaissance de mots du dictionnaire de différentes langues
 //Utilise une méthode similaire pour Vigenere afin de pouvoir décoder des mots chiffrés avec une clé de grande taille.
 // Même idée pour XOR.
 	
@@ -443,17 +443,31 @@ public class Decrypt {
 	public static int vigenereFindKeyLength(List<Byte> cipher) {
 
 		ArrayList<Integer> maxima = localMaximaIndex(characterCoincidence(cipher));
+		Integer[] distancesCount = new Integer[10];
 		int keyLength = 0;
+
+		for (int i=0; i< distancesCount.length;i++) { distancesCount[i] = 0;}
 
 		if (maxima.size() > 1) {
 			for (int i = 0; i < (maxima.size() - 1); i++) {
-				keyLength += maxima.get(i + 1) - maxima.get(i);
+				++distancesCount[maxima.get(i + 1) - maxima.get(i)];
 			}
 
-			keyLength = (int) Math.ceil(((double) keyLength) / (maxima.size() - 1));
+			List<Integer> distances = Arrays.asList(distancesCount);
+			int firstMax = Collections.max(distances);
+			keyLength = distances.indexOf(firstMax);
+			distances.set(keyLength, 0);
+
+			if(Collections.max(distances) == firstMax){
+				keyLength = distances.indexOf(firstMax);
+			}
 
 		} else {
-			keyLength = maxima.get(0) + 1;
+			try {
+				keyLength = maxima.get(0) + 1;
+			} catch (IndexOutOfBoundsException e){
+				System.out.println();
+			}
 		}
 
 		return keyLength;
@@ -470,6 +484,8 @@ public class Decrypt {
 	 * @return the inverse key to decode the Vigenere cipher text
 	 */
 	public static byte[] vigenereFindKey(List<Byte> cipher, int keyLength) {
+
+		assert keyLength != 0 : "Taille de clé non compatible";
 
 		byte[] key = new byte[keyLength];
 
@@ -544,6 +560,8 @@ public class Decrypt {
 	 * @return an ArrayList containing the index of each local maxima in the ArrayList.
 	 */
 	public static ArrayList<Integer> localMaximaIndex(List<Integer> coincidenceList) {
+
+		assert coincidenceList.size() != 0 : "Le texte n'est pas assez long pour trouver la clé" ;
 
 		ArrayList<Integer> localMaxima = new ArrayList<>();
 
