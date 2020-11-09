@@ -29,20 +29,13 @@ public class Encrypt {
 	public static String encrypt(String message, String key, int type) {
 		byte[] inputKeyTable = stringToBytes(key); // /!\ Tableau des clés (input utilisateur)
 		byte[] plainText = stringToBytes(cleanString(message));
-		
-		// Generation du tableau des clés valides (modulo 256)
-		byte[] validKeyTable = new byte[inputKeyTable.length]; // Tableau "validé" avec les modulo. C'est peut être inutile en vrai...
-		for(int keyIndex = 0; keyIndex < inputKeyTable.length; ++keyIndex)
-		{
-			validKeyTable[keyIndex] = (byte)(inputKeyTable[keyIndex] % 256);
-		}
-
+	
 		String encodedStrings;
 
 		switch(type){
 
 			case CAESAR:
-				byte ceasarKey = validKeyTable[0]; //La clé du chiffrement césar ne contient qu'un seul caractère
+				byte ceasarKey = inputKeyTable[0]; //La clé du chiffrement césar ne contient qu'un seul caractère
 				encodedStrings = bytesToString(caesar(plainText, ceasarKey, false));
 				return encodedStrings;
 
@@ -51,7 +44,7 @@ public class Encrypt {
 				return encodedStrings;
 
 			case XOR:
-				byte xorKey = validKeyTable[0]; //La clé du chiffrement xor ne contient qu'un seul caractère
+				byte xorKey = inputKeyTable[0]; //La clé du chiffrement xor ne contient qu'un seul caractère
 				encodedStrings = bytesToString(xor(plainText, xorKey));
 				return encodedStrings;
 
