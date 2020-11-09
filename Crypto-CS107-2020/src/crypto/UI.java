@@ -69,7 +69,7 @@ public class UI {
 					
 				else if (choixMethodeDechiffrement == 4) //CBC
 				{
-					System.out.print("Renseignez le mot que vous désirez déchiffrer");
+					System.out.println("Renseignez le mot que vous désirez déchiffrer : ");
 					String encodedWordString = input0.nextLine();
 					byte[] encodedWordBytes = Helper.stringToBytes(encodedWordString);
 					System.out.println("Veuillez entrer le PAD avec lequel vous avez chiffré votre message : ");
@@ -77,7 +77,7 @@ public class UI {
 					byte[] bytePAD = Helper.stringToBytes(stringPAD);
 					byte[] decodedBytes = Decrypt.decryptCBC(encodedWordBytes, bytePAD);						
 					String decodedString = Helper.bytesToString(decodedBytes);
-					System.out.print("Voici le mot déchiffré : " + decodedString);
+					System.out.println("Voici le mot déchiffré : " + decodedString);
 				}
 
 				}
@@ -96,7 +96,7 @@ public class UI {
 	}
 	
 	public static void clearConsole() {
-	    System.out.print("\033[H\033[2J");
+	    //System.out.print("\033[H\033[2J");
 	    System.out.flush();
 	}
 	
@@ -149,7 +149,7 @@ public class UI {
 			int choixGenerationPad = askChoice("Souhaitez vous :\n[1] Générer un PAD aléatoirement\n[2] Spécifier vous même votre PAD", acceptedNumber);
 			if(choixGenerationPad == 1)
 			{
-				System.out.println("Entrez la taille du PAD (nécessairement inférieure à la taille de votre mot) : ");
+				System.out.println("Entrez la taille du PAD (nécessairement inférieure ou égale à la taille de votre mot) : ");
 				int size = input2.nextInt();
 				key = Helper.bytesToString(Encrypt.generatePad(size));
 			}
