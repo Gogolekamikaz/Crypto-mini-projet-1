@@ -266,7 +266,7 @@ public class Encrypt {
 			ivUtilisation[z] = iv[z];
 		}
 
-		while(!encodedBytesListFullyCompleted) // Assez explicite pour ne pas avoir besoin de commenter ? (je le fais quand même au final hihihihi) Je te salue si tu passes par ces contrées mon pote Ugo
+		while(!encodedBytesListFullyCompleted)
 		{
 			// Encodage jusqu'au T ème byte. T étant la taille du pad
 
