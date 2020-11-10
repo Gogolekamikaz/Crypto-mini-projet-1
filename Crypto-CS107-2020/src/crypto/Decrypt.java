@@ -43,7 +43,7 @@ public class Decrypt {
 		}
 		else if(type == VIGENERE)
 		{
-			String decodedString = bytesToString(vigenereWithFrequencies(cipherBytes));
+			String decodedString = bytesToString(vigenereWithKey(stringToBytes(cipher), vigenereWithFrequencies(cipherBytes)));
 			return decodedString;
 		}
 		else if(type == XOR)

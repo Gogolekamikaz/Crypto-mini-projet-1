@@ -188,7 +188,7 @@ public class Encrypt {
 				encodedBytes[i] = (byte) (plainText[i] + keyword[i % keyword.length]);
 			} else {
 				if(plainText[i] != SPACE){
-					encodedBytes[i] = (byte) ((plainText[i] + keyword[(i + (spaceShift * (keyword.length-1))) % keyword.length]));
+					encodedBytes[i] = (byte) ((plainText[i] + keyword[(i - spaceShift)% keyword.length]));//+ (spaceShift * (keyword.length-1))) % keyword.length]));
 				} else {
 					encodedBytes[i] = plainText[i];
 					++spaceShift;

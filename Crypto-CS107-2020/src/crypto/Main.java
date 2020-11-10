@@ -13,7 +13,7 @@ public class Main {
 	//---------------------------MAIN---------------------------
 	public static void main(String args[]) {
 
-		String inputMessage = Helper.readStringFromFile("text_two.txt");
+		String inputMessage = Helper.readStringFromFile("text_one.txt");
 		String key = "2cF%5";
 
 		String messageClean = cleanString(inputMessage);
@@ -29,14 +29,11 @@ public class Main {
 		System.out.println("------Caesar------");
 		testCaesar(messageBytes, keyBytes[0]);
 
-		
-		byte key2 = (byte)50;
-
 		System.out.println("------Xor------");
-		testXor(messageBytes, key2);
+		testXor(messageBytes, keyBytes[0]);
+
 		System.out.println("------Vigenere------");
 		testVigenere(messageBytes, keyBytes);
-		//System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(Helper.stringToBytes("cqqog mpwuoëh"))));
 
 		System.out.println("------PAD------");
 		System.out.println(bytesToString(Encrypt.generatePad(5)));
@@ -45,18 +42,7 @@ public class Main {
 		testOTP(messageBytes);
 
 		System.out.println("------CBC------");
-		testCBC(messageBytes);
-
-		/*System.out.println(Decrypt.caesarWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt"))));
-		System.out.println(bytesToString(Encrypt.caesar(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")), (byte)-107)));*/
-		/*System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt")))));
-		System.out.println(bytesToString(Decrypt.vigenereWithKey(stringToBytes(readStringFromFile("challenge-encrypted.txt")), Decrypt.vigenereWithFrequencies(stringToBytes(Helper.readStringFromFile("challenge-encrypted.txt"))))));
-*/
-		// TODO: TO BE COMPLETED
-
-		//SignaturesCheck.check();
-
-		//System.out.println(bytesToString(Encrypt.cbc(new byte[10], new byte[8])));
+		testCBC(messageBytes, keyBytes);
 
 	}
 	
@@ -95,15 +81,11 @@ public class Main {
 		System.out.println("Decoded knowing the key : " + sD);
 
 
-
 		//Decoding without key
 		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
 		String sDA = Decrypt.arrayToString(bruteForceResult);
 		Helper.writeStringToFile(sDA, "bruteForceXor.txt");
 
-		/*byte decodingKey = Decrypt.caesarWithFrequencies(result);
-		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));
-		System.out.println("Decoded without knowing the key : " + sFD);*/
 	}
 
 	//Run the Encoding and Decoding using the Vigenere pattern
@@ -112,27 +94,17 @@ public class Main {
 		byte[] result = Encrypt.vigenere(string, key);
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
-		System.out.println("Exemple du diapo :");
-		System.out.println(Helper.bytesToString(Encrypt.vigenere(Helper.stringToBytes("bonne journée"), new byte[]{(byte) 1, (byte) 2, (byte) 3}, false)));
-		/*
+
 		//Decoding with key
-		String sD = bytesToString(Encrypt.vigenere(result, stringToBytes("Î\u009DºÛË")));
-		System.out.println("Decoded knowing the key : " + sD);*/
+		String sD = Decrypt.breakCipher(s, Encrypt.VIGENERE, key);
+		System.out.println("Decoded knowing the key : " + sD);
 
-		System.out.println("Decoded without knowing the key (key lenght) : ");
-		System.out.println(Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(result)));
-		System.out.println(bytesToString(Decrypt.vigenereFindKey(Decrypt.removeSpaces(result), Decrypt.vigenereFindKeyLength(Decrypt.removeSpaces(result)))));
-		System.out.println(bytesToString(Decrypt.vigenereWithFrequencies(result)));
+		System.out.println("Decoded without knowing the key : ");
+		System.out.print("Key : ");
+		System.out.println(Decrypt.breakCipher(bytesToString(result), 1));
+		System.out.println("Message : ");
+		System.out.println(Decrypt.breakCipher(s, Encrypt.VIGENERE));
 
-
-		/*//Decoding without key
-		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
-		String sDA = Decrypt.arrayToString(bruteForceResult);
-		Helper.writeStringToFile(sDA, "bruteForceXor.txt");*/
-
-		/*byte decodingKey = Decrypt.caesarWithFrequencies(result);
-		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));
-		System.out.println("Decoded without knowing the key : " + sFD);*/
 	}
 
 	//Run the Encoding and Decoding using the OTP pattern
@@ -142,36 +114,20 @@ public class Main {
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
 
-		/*//Decoding with key
-		String sD = bytesToString(Encrypt.vigenere(result, stringToBytes("Î\u009DºÛË")));
-		System.out.println("Decoded knowing the key : " + sD);*/
-
-
-
-		/*//Decoding without key
-		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
-		String sDA = Decrypt.arrayToString(bruteForceResult);
-		Helper.writeStringToFile(sDA, "bruteForceXor.txt");*/
-
-		/*byte decodingKey = Decrypt.caesarWithFrequencies(result);
-		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));
-		System.out.println("Decoded without knowing the key : " + sFD);*/
 	}
 
 	//Run the Encoding and Decoding using the CBC pattern
-	public static void testCBC(byte[] string) {
+	public static void testCBC(byte[] string, byte[] pad) {
 		//Encoding
-		byte[] padTest = {49, 50, 51}; //Encrypt.generatePad(5);
-		byte[] result = Encrypt.cbc(string, padTest);
+		byte[] result = Encrypt.cbc(string, pad);
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
 
 		//Decoding with key
-		String sD = bytesToString(Decrypt.decryptCBC(result, padTest));
+		String sD = bytesToString(Decrypt.decryptCBC(result, pad));
 		System.out.println("Decoded knowing the key : " + sD);
 
 	}
-	
-//TODO : TO BE COMPLETED
+
 	
 }
